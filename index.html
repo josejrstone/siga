@@ -134,21 +134,6 @@
             </section>
         </div>
 
-        <!-- TELA DE TAREFAS -->
-        <section id="tasks-page" class="max-w-5xl mx-auto p-4 space-y-6">
-            <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                <div>
-                    <h2 class="text-2xl font-black text-slate-800">Tarefas</h2>
-                    <p class="mt-1 text-xs font-medium text-slate-500">Ordenadas por urgência</p>
-                </div>
-                <label class="text-[10px] font-black uppercase tracking-wider text-slate-400">
-                    Selecionar data
-                    <input id="task-date-selector" type="date" class="mt-1 rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-700 outline-none focus:border-indigo-400">
-                </label>
-            </div>
-            <div id="tasks-list" class="space-y-3"></div>
-        </section>
-
         <div id="observation-modal" class="fixed inset-0 z-[70] hidden items-center justify-center bg-slate-900/40 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="observation-title">
             <div class="w-full max-w-xl overflow-hidden rounded-[2rem] bg-white shadow-2xl">
                 <div class="flex items-start justify-between border-b border-slate-100 p-5">
@@ -254,6 +239,21 @@
         </section>
 
     </main>
+
+    <!-- TELA DE TAREFAS -->
+    <section id="tasks-page" class="hidden max-w-5xl mx-auto p-4 space-y-6">
+        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+                <h2 class="text-2xl font-black text-slate-800">Tarefas</h2>
+                <p class="mt-1 text-xs font-medium text-slate-500">Ordenadas por urgência</p>
+            </div>
+            <label class="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                Selecionar data
+                <input id="task-date-selector" type="date" class="mt-1 rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-700 outline-none focus:border-indigo-400">
+            </label>
+        </div>
+        <div id="tasks-list" class="space-y-3"></div>
+    </section>
 
     <!-- FAB -->
     <button id="fab-button" class="fixed bottom-24 right-6 md:bottom-10 md:right-10 w-16 h-16 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-2xl shadow-indigo-300 hover:scale-110 active:scale-95 transition-all z-50">
@@ -422,7 +422,8 @@
         function updateTask(taskId, changes) {
             const tasks = getTasks().map(task => task.id === taskId ? { ...task, ...changes } : task);
             saveTasks(tasks);
-            renderTasks();
+            if (document.getElementById('tasks-page').classList.contains('active')) renderTasksByDate(currentSelectedDate);
+            else renderTasks();
         }
 
         let currentSelectedDate = getLocalDateKey();
@@ -521,7 +522,7 @@
                 const notificationKey = `${today}-${task.id}`;
                 if (sent[notificationKey]) return;
                 const notification = new Notification(`Tarefa às ${task.time}`, { body: task.title, tag: notificationKey, icon: 'https://cdn.jsdelivr.net/npm/lucide-static@0.468.0/icons/check-square.svg' });
-                notification.onclick = () => { window.focus(); openTasksPage(); notification.close(); };
+                notification.onclick = () => { window.focus(); showPage('tasks'); notification.close(); };
                 sent[notificationKey] = true;
             });
             localStorage.setItem(sentKey, JSON.stringify(sent));
@@ -606,7 +607,8 @@
                     const task = getTasks().find(item => item.id === deleteButton.dataset.deleteTask);
                     if (task && task.owner !== 'manager' && window.confirm('Excluir esta tarefa?')) {
                         saveTasks(getTasks().filter(item => item.id !== task.id));
-                        renderTasks();
+                        if (document.getElementById('tasks-page').classList.contains('active')) renderTasksByDate(currentSelectedDate);
+                        else renderTasks();
                     }
                 }
             });
@@ -617,8 +619,6 @@
             renderTasks();
             bindTaskActions();
             initObservationEditor();
-                renderTasks();
-            });
             initTaskNotifications();
         }
 
