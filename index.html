@@ -446,15 +446,16 @@
                 navInicio.classList.remove('text-indigo-600');
                 navTasks.classList.remove('text-slate-300');
                 navTasks.classList.add('text-indigo-600');
-                indicator.style.left = '80%';
+                indicator.style.left = '60%';
                 renderTasksByDate(currentSelectedDate);
             }
         }
 
         function renderTasksByDate(dateKey) {
             const tasks = sortedTasks().filter(task => {
-                const taskDate = dateKey || getLocalDateKey();
-                return !taskDate || task.date === taskDate;
+                const filterDate = dateKey || getLocalDateKey();
+                const taskDate = task.date || getLocalDateKey();
+                return taskDate === filterDate;
             });
             document.getElementById('tasks-list').innerHTML = tasks.length ? tasks.map(task => renderTask(task, true)).join('') : '<p class="rounded-2xl bg-white p-4 text-xs text-slate-400">Nenhuma tarefa para este dia.</p>';
             lucide.createIcons();
@@ -523,6 +524,8 @@
         function initTaskNotifications() {
             requestTaskNotifications();
             checkTaskNotifications();
+            setupModalBackdropClose();
+            showPage('dashboard');
             window.setInterval(checkTaskNotifications, 15000);
         }
 
@@ -535,6 +538,13 @@
         function closeNewTaskModal() {
             document.getElementById('new-task-modal').classList.add('hidden');
             document.getElementById('new-task-modal').classList.remove('flex');
+        }
+
+        function setupModalBackdropClose() {
+            const modal = document.getElementById('new-task-modal');
+            modal.addEventListener('click', event => {
+                if (event.target === modal) closeNewTaskModal();
+            });
         }
 
         function bindTaskActions() {
