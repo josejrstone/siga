@@ -3,237 +3,395 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIGA - Supabase</title>
+    <title>SIGA - Dashboard Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Supabase Client -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .tier-bronze { background: linear-gradient(135deg, #cd7f32, #a0522d); }
+        .tier-silver { background: linear-gradient(135deg, #94a3b8, #475569); }
+        .tier-gold { background: linear-gradient(135deg, #fbbf24, #d97706); }
+        .progress-glow { box-shadow: 0 0 20px rgba(99, 102, 241, 0.2); }
+        .nav-indicator { position: absolute; bottom: 0; height: 3px; background: linear-gradient(90deg, #4f46e5, #7c3aed); border-radius: 2px 2px 0 0; transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1); }
+        .date-carousel { scrollbar-width: none; touch-action: pan-x; }
+        .date-carousel::-webkit-scrollbar { display: none; }
         .hidden { display: none !important; }
-        .flex-view { display: flex !important; }
     </style>
 </head>
-<body class="bg-[#FBFDFF] text-slate-900 min-h-screen">
+<body class="bg-[#FBFDFF] text-slate-900 min-h-screen pb-28">
 
-    <!-- 1. VIEW: CARREGANDO (Evita tela branca vazia) -->
-    <div id="view-loading" class="min-h-screen flex items-center justify-center bg-white">
-        <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-indigo-600"></div>
-    </div>
-
-    <!-- 2. VIEW: LANDING -->
-    <div id="view-landing" class="hidden min-h-screen items-center justify-center p-6">
+    <!-- TODAS AS VIEWS DO SEU SITE ORIGINAL -->
+    
+    <!-- 1. LANDING -->
+    <div id="view-landing" class="hidden min-h-screen items-center justify-center bg-[#FBFDFF] p-6">
         <div class="text-center">
-            <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-lg">
-                <i data-lucide="zap" class="h-7 w-7"></i>
-            </div>
+            <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-xl"><i data-lucide="zap" class="h-7 w-7"></i></div>
             <h1 class="text-2xl font-black text-slate-800">SIGA</h1>
-            <p class="mt-2 text-sm text-slate-500">Sistema de Gestão Integrado</p>
-            <a href="#master-login" class="mt-10 inline-block text-[10px] font-black uppercase tracking-widest text-indigo-400">Painel Administrativo</a>
+            <p class="mt-2 text-sm text-slate-500">Acesse pelo link fornecido pela sua loja.</p>
+            <a href="#master-login" class="mt-10 inline-block text-[10px] font-black uppercase tracking-widest text-indigo-400">Área Administrativa</a>
         </div>
     </div>
 
-    <!-- 3. VIEW: LOGIN MASTER -->
+    <!-- 2. LOGIN MASTER -->
     <div id="view-master-login" class="hidden min-h-screen items-center justify-center p-6">
         <form id="master-login-form" class="w-full max-w-sm rounded-[2rem] border border-slate-100 bg-white p-8 shadow-xl">
-            <div class="mb-6 text-center">
-                <h1 class="text-lg font-black text-slate-800">Painel Master</h1>
-                <p class="text-xs text-slate-400">Acesso via Supabase Auth</p>
-            </div>
-            <div class="space-y-4">
-                <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400">E-mail
-                    <input id="master-email" type="email" required class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-indigo-400">
-                </label>
-                <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400">Senha
-                    <input id="master-password" type="password" required class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-indigo-400">
-                </label>
-            </div>
-            <p id="master-error" class="mt-4 text-[10px] font-bold text-red-500 text-center min-h-[15px]"></p>
-            <button type="submit" class="mt-4 w-full rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-black text-white hover:bg-indigo-700 transition-all">Entrar</button>
-            <button type="button" onclick="window.location.hash=''" class="mt-2 w-full text-[10px] font-bold text-slate-400 uppercase">Voltar</button>
+            <div class="mb-6 text-center"><h1 class="text-lg font-black text-slate-800">Painel Master</h1><p class="text-xs text-slate-400">Login via Supabase Auth</p></div>
+            <label class="mb-3 block text-[10px] font-black uppercase tracking-wider text-slate-400">E-mail<input id="master-email" type="email" required class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-indigo-400"></label>
+            <label class="mb-4 block text-[10px] font-black uppercase tracking-wider text-slate-400">Senha<input id="master-password" type="password" required class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-indigo-400"></label>
+            <p id="master-error" class="mb-3 text-[10px] font-bold text-red-500 text-center min-h-[16px]"></p>
+            <button type="submit" class="w-full rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-black text-white hover:bg-indigo-700">Entrar</button>
         </form>
     </div>
 
-    <!-- 4. VIEW: PAINEL MASTER (Pós-Login) -->
-    <div id="view-master-panel" class="hidden min-h-screen bg-[#FBFDFF] p-4">
-        <header class="max-w-5xl mx-auto flex justify-between items-center py-6">
-            <div class="flex items-center gap-2 font-black text-indigo-600">
-                <i data-lucide="shield-check"></i> SIGA ADMIN
+    <!-- 3. PAINEL MASTER (ONDE VOCÊ GERENCIA AS LOJAS E EQUIPE) -->
+    <div id="view-master-panel" class="hidden min-h-screen bg-[#FBFDFF]">
+        <header class="sticky top-0 z-50 border-b border-slate-100 bg-white/80 backdrop-blur-xl">
+            <div class="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+                <div class="flex items-center gap-2"><div class="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-white"><i data-lucide="shield-check" class="h-5 w-5"></i></div><span class="text-xl font-black text-slate-800">SIGA Admin</span></div>
+                <button onclick="handleLogout()" class="rounded-xl bg-slate-100 px-4 py-2 text-xs font-black text-slate-600">Sair</button>
             </div>
-            <button onclick="handleLogout()" class="text-xs font-bold text-slate-400 hover:text-red-500">Sair da Conta</button>
         </header>
-        
-        <main class="max-w-5xl mx-auto space-y-6">
-            <!-- Cadastro de Loja -->
-            <section class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
-                <h2 class="font-black text-slate-800 mb-4 flex items-center gap-2">
-                    <i data-lucide="plus-circle" class="w-5 h-5 text-indigo-600"></i> Cadastrar Nova Loja
-                </h2>
-                <div class="flex flex-col sm:flex-row gap-2">
-                    <input id="new-loja-name" type="text" placeholder="Ex: Loja Centro" class="flex-1 rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-indigo-400">
-                    <button onclick="handleCreateLoja()" class="bg-indigo-600 text-white px-6 py-2.5 rounded-xl text-xs font-black hover:bg-indigo-700 shadow-lg shadow-indigo-100">Criar Loja</button>
+        <main class="mx-auto max-w-5xl space-y-6 p-4">
+            <!-- LOJAS -->
+            <section class="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-sm">
+                <h2 class="mb-4 text-lg font-black text-slate-800">Lojas Cadastradas</h2>
+                <div class="flex gap-2 mb-6">
+                    <input id="new-loja-name" placeholder="Nome da Loja" class="flex-1 rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none">
+                    <button onclick="handleCreateLoja()" class="bg-indigo-600 text-white px-6 py-2.5 rounded-xl text-xs font-black">Criar</button>
                 </div>
+                <div id="loja-list" class="space-y-2"></div>
             </section>
-
-            <!-- Lista de Lojas -->
-            <section class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
-                <h2 class="font-black text-slate-800 mb-4">Lojas Ativas</h2>
-                <div id="loja-list" class="space-y-3">
-                    <!-- Gerado via JS -->
+            <!-- EQUIPE (SÓ APARECE QUANDO CLICA EM GERENCIAR LOJA) -->
+            <section id="loja-team-section" class="hidden rounded-[2rem] border border-slate-100 bg-white p-6 shadow-sm">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 id="loja-team-title" class="text-lg font-black text-slate-800">Equipe da Loja</h2>
+                    <button onclick="closeLojaTeam()" class="text-xs text-slate-400">Fechar</button>
                 </div>
+                <form id="usuario-form" class="grid gap-3 sm:grid-cols-2 mb-6">
+                    <input type="hidden" id="usuario-editing-id">
+                    <label class="sm:col-span-2 text-[10px] font-black uppercase tracking-wider text-slate-400">Nome Completo<input id="u-name" required class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"></label>
+                    <label class="text-[10px] font-black uppercase tracking-wider text-slate-400">Função<select id="u-role" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"><option value="vendedor">Vendedor</option><option value="gerente">Gerente</option></select></label>
+                    <label class="text-[10px] font-black uppercase tracking-wider text-slate-400">Login (ID Único)<input id="u-login" required class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"></label>
+                    <label class="sm:col-span-2 text-[10px] font-black uppercase tracking-wider text-slate-400">Senha<input id="u-pass" required type="password" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"></label>
+                    <button type="submit" class="sm:col-span-2 bg-emerald-500 text-white py-3 rounded-xl font-black text-xs">Salvar Acesso no Supabase</button>
+                </form>
+                <div id="usuario-list" class="space-y-2"></div>
             </section>
         </main>
     </div>
 
+    <!-- 4. LOGIN DO VENDEDOR (PELO LINK GERADO) -->
+    <div id="view-pessoa-login" class="hidden min-h-screen items-center justify-center bg-[#FBFDFF] p-6">
+        <form id="pessoa-login-form" class="w-full max-w-sm rounded-[2rem] border border-slate-100 bg-white p-8 shadow-xl">
+            <div class="mb-6 text-center"><div class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-600 text-white"><i data-lucide="log-in" class="h-6 w-6"></i></div><h1 id="p-login-title" class="text-lg font-black text-slate-800">Acesso da Equipe</h1></div>
+            <label class="mb-3 block text-[10px] font-black uppercase text-slate-400">Login<input id="p-username" required class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm"></label>
+            <label class="mb-4 block text-[10px] font-black uppercase text-slate-400">Senha<input id="p-password" type="password" required class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm"></label>
+            <p id="p-login-error" class="mb-3 text-[10px] font-bold text-red-500 text-center"></p>
+            <button type="submit" class="w-full rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-black text-white">Entrar</button>
+        </form>
+    </div>
+
+    <!-- 5. O APP COMPLETO (O QUE O VENDEDOR VÊ) -->
+    <div id="app-shell" class="hidden">
+        <header class="sticky top-0 z-50 bg-white/70 backdrop-blur-xl border-b border-slate-100">
+            <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+                <div class="flex items-center gap-2"><div class="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center text-white"><i data-lucide="zap" class="w-5 h-5 fill-white"></i></div><span class="text-xl font-black text-slate-800">SIGA</span></div>
+                <div class="flex items-center gap-3">
+                    <span id="user-display-name" class="text-[10px] font-black uppercase text-slate-400 hidden sm:inline"></span>
+                    <button onclick="handleLogout()" class="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500"><i data-lucide="log-out" class="w-4 h-4"></i></button>
+                </div>
+            </div>
+            <!-- MENU DESKTOP -->
+            <nav class="hidden md:block border-t border-slate-100 bg-white/80">
+                <div class="mx-auto flex max-w-5xl items-center gap-2 px-6 py-2">
+                    <button onclick="showPage('dashboard')" class="px-3 py-2 text-xs font-black text-indigo-600">Início</button>
+                    <button onclick="showPage('service')" class="px-3 py-2 text-xs font-black text-slate-500">Atendimentos</button>
+                    <button onclick="showPage('sales')" class="px-3 py-2 text-xs font-black text-slate-500">Vendas</button>
+                    <button onclick="showPage('tasks')" class="px-3 py-2 text-xs font-black text-slate-500">Tarefas</button>
+                    <button onclick="showPage('conditional')" class="px-3 py-2 text-xs font-black text-slate-500">Condicionais</button>
+                </div>
+            </nav>
+        </header>
+
+        <!-- PÁGINAS DO APP -->
+        <main id="main-app-container" class="max-w-5xl mx-auto p-4 space-y-6">
+            <!-- DASHBOARD PAGE (TELA INICIAL) -->
+            <div id="page-dashboard" class="page-view space-y-6">
+                <!-- Metas, Ranking, Humor - (Seus componentes originais aqui) -->
+                <section class="bg-white rounded-[2.5rem] p-8 shadow-xl border border-slate-50">
+                    <div class="flex justify-between items-start mb-8">
+                        <div>
+                            <h2 class="text-2xl font-black text-slate-800">Meta Semanal</h2>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest italic">Período Atual</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[10px] font-black text-slate-400 uppercase">Realizado</p>
+                            <p id="dash-vendas-total" class="text-3xl font-black text-indigo-600 tabular-nums">R$ 0,00</p>
+                        </div>
+                    </div>
+                    <div class="w-full h-4 bg-slate-100 rounded-full overflow-hidden mb-12">
+                        <div id="dash-meta-progress" class="h-full bg-gradient-to-r from-indigo-500 to-cyan-400 transition-all duration-1000" style="width: 0%"></div>
+                    </div>
+                </section>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <section class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
+                        <h3 class="text-sm font-black text-slate-800 uppercase tracking-widest mb-4 flex items-center gap-2">
+                            <i data-lucide="list-checks" class="w-4 h-4 text-indigo-500"></i> Minhas Tarefas de Hoje
+                        </h3>
+                        <div id="dash-tasks-list" class="space-y-3"></div>
+                    </section>
+                    <section class="bg-indigo-600 p-6 rounded-[2rem] text-white relative overflow-hidden shadow-lg">
+                        <i data-lucide="lightbulb" class="absolute -right-2 -bottom-2 w-20 h-20 opacity-20 rotate-12"></i>
+                        <h3 class="text-[10px] font-black uppercase tracking-[0.2em] mb-2 opacity-80">Dica do Dia</h3>
+                        <p class="text-sm font-semibold">Técnica da Escassez: "Temos poucas unidades deste modelo no estoque."</p>
+                    </section>
+                </div>
+            </div>
+
+            <!-- OUTRAS PÁGINAS (VENDAS, TAREFAS, ETC) -->
+            <div id="page-sales" class="page-view hidden space-y-4">
+                <h2 class="text-2xl font-black text-slate-800">Minhas Vendas</h2>
+                <div id="list-sales" class="space-y-3"></div>
+            </div>
+            
+            <div id="page-tasks" class="page-view hidden space-y-4">
+                <h2 class="text-2xl font-black text-slate-800">Tarefas</h2>
+                <div id="list-tasks" class="space-y-3"></div>
+            </div>
+
+            <div id="page-conditional" class="page-view hidden space-y-4">
+                <h2 class="text-2xl font-black text-slate-800">Condicionais</h2>
+                <div id="list-conditionals" class="space-y-3"></div>
+            </div>
+        </main>
+
+        <!-- FAB BUTTON -->
+        <button onclick="openGenericModal()" id="fab-button" class="fixed bottom-24 right-6 md:bottom-10 md:right-10 w-16 h-16 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-2xl z-50">
+            <i data-lucide="plus" class="w-8 h-8"></i>
+        </button>
+
+        <!-- NAV MOBILE -->
+        <nav class="md:hidden fixed inset-x-0 bottom-0 z-[60] h-20 w-full bg-white/95 border-t border-slate-100 flex items-center justify-around">
+            <button onclick="showPage('dashboard')" class="flex flex-col items-center gap-1 text-indigo-600"><i data-lucide="layout-grid" class="w-6 h-6"></i><span class="text-[9px] font-black uppercase">Início</span></button>
+            <button onclick="showPage('sales')" class="flex flex-col items-center gap-1 text-slate-300"><i data-lucide="shopping-bag" class="w-6 h-6"></i><span class="text-[9px] font-black uppercase">Vendas</span></button>
+            <button onclick="showPage('tasks')" class="flex flex-col items-center gap-1 text-slate-300"><i data-lucide="check-square" class="w-6 h-6"></i><span class="text-[9px] font-black uppercase">Tarefas</span></button>
+            <button onclick="showPage('conditional')" class="flex flex-col items-center gap-1 text-slate-300"><i data-lucide="rotate-ccw" class="w-6 h-6"></i><span class="text-[9px] font-black uppercase">Condic.</span></button>
+        </nav>
+    </div>
+
+    <!-- MODAIS DE LANÇAMENTO (SIMPLIFICADO PARA O SUPABASE) -->
+    <div id="modal-container" class="fixed inset-0 z-[100] hidden items-center justify-center bg-slate-900/40 p-4 backdrop-blur-sm">
+        <div class="w-full max-w-md bg-white rounded-[2rem] p-6 shadow-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h2 id="modal-title" class="font-black text-slate-800">Lançamento</h2>
+                <button onclick="closeGenericModal()"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div id="modal-content" class="space-y-4">
+                <!-- Conteúdo do modal muda conforme a página aberta -->
+            </div>
+        </div>
+    </div>
+
     <script>
-        // --- 1. CONFIGURAÇÃO ---
+        // --- CONFIGURAÇÃO SUPABASE ---
         const SB_URL = "https://kqnfjtubsdxaatzfdlvf.supabase.co";
         const SB_KEY = "sb_publishable_DyoyiM0MvNNgsEmpsh7eWw_FHqfTshT";
-        
-        // Inicialização correta do cliente para evitar erro de tela branca
-        const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
+        const sb = supabase.createClient(SB_URL, SB_KEY);
 
-        // --- 2. NAVEGAÇÃO ---
-        async function router() {
-            try {
-                const hash = window.location.hash;
-                const { data: { session } } = await supabaseClient.auth.getSession();
+        let currentStoreId = null;
+        let currentUser = null;
 
-                // Reset de visualização
-                hideAll();
-
-                if (hash === "#master-login") {
-                    if (session) { window.location.hash = "#master"; return; }
-                    showView('view-master-login', 'flex');
-                } 
-                else if (hash === "#master") {
-                    if (!session) { window.location.hash = "#master-login"; return; }
-                    showView('view-master-panel', 'block');
-                    renderLojas();
-                } 
-                else {
-                    showView('view-landing', 'flex');
-                }
-
-                lucide.createIcons();
-            } catch (err) {
-                console.error("Erro no Router:", err);
-                // Em caso de erro crítico, volta para o início
-                document.getElementById('view-loading').innerHTML = `<p class="text-red-500 font-bold">Erro de conexão: ${err.message}</p>`;
+        // --- INICIALIZAÇÃO ---
+        async function init() {
+            lucide.createIcons();
+            const hash = window.location.hash;
+            
+            // Verifica Sessão Auth (Master)
+            const { data: { session } } = await sb.auth.getSession();
+            
+            // 1. Se for link de Setup do Vendedor: #setup/base64...
+            if (hash.startsWith('#setup/')) {
+                handleSetupLink(hash.slice(7));
+                return;
             }
+
+            // 2. Se for link de Login do Vendedor: #acesso/slug
+            if (hash.startsWith('#acesso/')) {
+                showView('view-pessoa-login');
+                setupVendedorLogin(hash.slice(8));
+                return;
+            }
+
+            // 3. Se estiver Logado como Master
+            if (session) {
+                showView('view-master-panel');
+                renderLojas();
+                return;
+            }
+
+            // 4. Fluxo Padrão
+            if (hash === '#master-login') showView('view-master-login');
+            else showView('view-landing');
         }
 
-        function hideAll() {
-            ['view-loading', 'view-landing', 'view-master-login', 'view-master-panel'].forEach(id => {
-                const el = document.getElementById(id);
+        function showView(id) {
+            ['view-landing', 'view-master-login', 'view-master-panel', 'view-pessoa-login', 'app-shell'].forEach(v => {
+                const el = document.getElementById(v);
                 if(el) el.classList.add('hidden');
             });
+            const target = document.getElementById(id);
+            if(target) target.classList.remove('hidden');
         }
 
-        function showView(id, display) {
-            const el = document.getElementById(id);
-            if(el) {
-                el.classList.remove('hidden');
-                if(display === 'flex') el.classList.add('flex');
-            }
-        }
+        // --- FUNÇÕES MASTER (LOJAS E EQUIPE) ---
 
-        // --- 3. AUTENTICAÇÃO ---
-        document.getElementById('master-login-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = e.target.querySelector('button[type="submit"]');
-            const email = document.getElementById('master-email').value;
-            const password = document.getElementById('master-password').value;
-            const errorEl = document.getElementById('master-error');
-
-            btn.innerText = "Autenticando...";
-            btn.disabled = true;
-            errorEl.innerText = "";
-
-            const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-
-            if (error) {
-                errorEl.innerText = "Falha: " + error.message;
-                btn.innerText = "Entrar";
-                btn.disabled = false;
-            } else {
-                window.location.hash = "#master";
-            }
-        });
-
-        async function handleLogout() {
-            await supabaseClient.auth.signOut();
-            window.location.hash = "";
-            window.location.reload();
-        }
-
-        // --- 4. GESTÃO DE LOJAS ---
         async function handleCreateLoja() {
-            const input = document.getElementById('new-loja-name');
-            const nome = input.value.trim();
-            if (!nome) return;
-
-            const slug = nome.toLowerCase()
-                .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // remove acentos
-                .replace(/[^a-z0-9]/g, '-');
-
-            const { error } = await supabaseClient.from('lojas').insert([{ nome, slug }]);
-
-            if (error) {
-                alert("Erro ao criar: " + error.message);
-            } else {
-                input.value = "";
-                renderLojas();
-            }
+            const nome = document.getElementById('new-loja-name').value;
+            if(!nome) return;
+            const slug = nome.toLowerCase().replace(/[^a-z0-9]/g, '-');
+            const { error } = await sb.from('lojas').insert([{ nome, slug }]);
+            if(error) alert(error.message); else renderLojas();
         }
 
         async function renderLojas() {
+            const { data: lojas } = await sb.from('lojas').select('*');
             const list = document.getElementById('loja-list');
-            list.innerHTML = `<div class="p-4 text-center text-slate-400 text-xs">Carregando lojas...</div>`;
-
-            const { data: lojas, error } = await supabaseClient
-                .from('lojas')
-                .select('*')
-                .order('created_at', { ascending: false });
-
-            if (error) {
-                list.innerHTML = `<p class="text-red-500 text-xs">Erro ao carregar lojas.</p>`;
-                return;
-            }
-
-            if (lojas.length === 0) {
-                list.innerHTML = `<div class="p-8 text-center border-2 border-dashed border-slate-100 rounded-2xl text-slate-400 text-sm">Nenhuma loja cadastrada ainda.</div>`;
-                return;
-            }
-
-            list.innerHTML = lojas.map(loja => `
-                <div class="flex items-center justify-between p-4 border border-slate-100 rounded-2xl bg-slate-50 hover:border-indigo-200 transition-colors">
-                    <div>
-                        <p class="font-bold text-slate-700">${loja.nome}</p>
-                        <p class="text-[9px] text-slate-400 uppercase font-black tracking-widest">${loja.slug}</p>
-                    </div>
-                    <div class="flex gap-2">
-                        <button onclick="copyAccessLink('${loja.slug}')" class="bg-white border border-slate-200 text-indigo-600 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase hover:bg-indigo-50">Copiar Link</button>
-                    </div>
+            list.innerHTML = lojas.map(l => `
+                <div class="flex items-center justify-between p-4 border rounded-2xl bg-white">
+                    <div><p class="font-bold">${l.nome}</p></div>
+                    <button onclick="manageLojaTeam('${l.id}', '${l.nome}')" class="text-xs font-black text-indigo-600">GERENCIAR EQUIPE</button>
                 </div>
             `).join('');
         }
 
-        function copyAccessLink(slug) {
-            const url = `${window.location.origin}${window.location.pathname}#loja/${slug}`;
-            navigator.clipboard.writeText(url).then(() => {
-                alert("Link da loja copiado!");
-            });
+        async function manageLojaTeam(id, nome) {
+            currentStoreId = id;
+            document.getElementById('loja-team-section').classList.remove('hidden');
+            document.getElementById('loja-team-title').innerText = `Equipe: ${nome}`;
+            renderUsuarios();
         }
 
-        // --- 5. INICIALIZAÇÃO ---
-        window.addEventListener('hashchange', router);
-        window.addEventListener('load', router);
-        
-        // Executa o router imediatamente na primeira carga
-        router();
+        async function renderUsuarios() {
+            const { data: perfis } = await sb.from('perfis').select('*').eq('loja_id', currentStoreId);
+            const list = document.getElementById('usuario-list');
+            list.innerHTML = perfis.map(u => {
+                const link = `${window.location.origin}${window.location.pathname}#setup/${btoa(JSON.stringify({uid: u.id, lid: u.loja_id}))}`;
+                return `
+                <div class="p-4 border rounded-2xl bg-slate-50">
+                    <p class="font-bold">${u.nome} (${u.cargo})</p>
+                    <p class="text-[10px] text-slate-400">Login: ${u.username}</p>
+                    <div class="mt-2 flex gap-2">
+                        <button onclick="navigator.clipboard.writeText('${link}'); alert('Link copiado!')" class="text-[9px] font-black text-indigo-600">COPIAR LINK DE ACESSO</button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
 
+        document.getElementById('usuario-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                loja_id: currentStoreId,
+                nome: document.getElementById('u-name').value,
+                cargo: document.getElementById('u-role').value,
+                username: document.getElementById('u-login').value,
+                password: document.getElementById('u-pass').value,
+                slug: document.getElementById('u-name').value.toLowerCase().replace(/ /g, '-'),
+                full_slug: `${currentStoreId}-${document.getElementById('u-login').value}`
+            };
+            const { error } = await sb.from('perfis').insert([payload]);
+            if(error) alert("Erro: " + error.message); else renderUsuarios();
+        });
+
+        // --- LOGIN DO VENDEDOR ---
+
+        let vendedorTempData = null;
+        async function setupVendedorLogin(slug) {
+            const { data } = await sb.from('perfis').select('*, lojas(nome)').eq('full_slug', slug).single();
+            if (data) {
+                vendedorTempData = data;
+                document.getElementById('p-login-title').innerText = data.lojas.nome;
+            }
+        }
+
+        document.getElementById('pessoa-login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const user = document.getElementById('p-username').value;
+            const pass = document.getElementById('p-password').value;
+            
+            if (vendedorTempData && vendedorTempData.username === user && vendedorTempData.password === pass) {
+                currentUser = vendedorTempData;
+                showView('app-shell');
+                startApp();
+            } else {
+                document.getElementById('p-login-error').innerText = "Login ou Senha incorretos";
+            }
+        });
+
+        // --- FUNCIONALIDADES DO APP (VENDEDOR) ---
+
+        function startApp() {
+            document.getElementById('user-display-name').innerText = currentUser.nome;
+            showPage('dashboard');
+        }
+
+        function showPage(page) {
+            document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
+            document.getElementById(`page-${page}`).classList.remove('hidden');
+            if (page === 'dashboard') loadDashboard();
+            if (page === 'sales') loadSales();
+            if (page === 'tasks') loadTasks();
+        }
+
+        async function loadDashboard() {
+            // Busca Vendas do Supabase
+            const { data: vendas } = await sb.from('vendas').select('*').eq('user_id', currentUser.id);
+            const total = vendas.reduce((acc, v) => acc + parseFloat(v.valor), 0);
+            document.getElementById('dash-vendas-total').innerText = total.toLocaleString('pt-BR', {style: 'currency', currency:'BRL'});
+            
+            // Busca Tarefas
+            const { data: tarefas } = await sb.from('tarefas').select('*').eq('user_id', currentUser.id).eq('concluida', false);
+            document.getElementById('dash-tasks-list').innerHTML = tarefas.map(t => `
+                <div class="p-3 border rounded-xl bg-slate-50 flex items-center justify-between">
+                    <span class="text-xs font-bold">${t.titulo}</span>
+                    <span class="text-[10px] text-slate-400">${t.horario}</span>
+                </div>
+            `).join('');
+        }
+
+        // LOGIN MASTER AUTH
+        document.getElementById('master-login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('master-email').value;
+            const password = document.getElementById('master-password').value;
+            const { error } = await sb.auth.signInWithPassword({ email, password });
+            if (error) document.getElementById('master-error').innerText = error.message;
+            else init();
+        });
+
+        async function handleLogout() {
+            await sb.auth.signOut();
+            window.location.hash = "";
+            location.reload();
+        }
+
+        // Funções de suporte para o Link de Setup (Cross-device)
+        function handleSetupLink(base64) {
+            try {
+                const data = JSON.parse(atob(base64));
+                // O setup link já contém o ID da loja e do usuário para facilitar o login
+                sb.from('perfis').select('*').eq('id', data.uid).single().then(({data: user}) => {
+                    if (user) {
+                        window.location.hash = `#acesso/${user.full_slug}`;
+                        init();
+                    }
+                });
+            } catch (e) { console.error("Link de setup inválido"); }
+        }
+
+        init();
     </script>
 </body>
 </html>
