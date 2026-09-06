@@ -556,6 +556,28 @@
             return `${location.origin}${location.pathname}#acesso/${usuario.fullSlug}`;
         }
 
+        function copyTextRobust(text, callback) {
+            if (navigator.clipboard?.writeText) {
+                navigator.clipboard.writeText(text).then(() => callback(true)).catch(() => fallbackCopy(text, callback));
+                return;
+            }
+            fallbackCopy(text, callback);
+        }
+
+        function fallbackCopy(text, callback) {
+            const input = document.createElement('textarea');
+            input.value = text;
+            input.style.position = 'fixed';
+            input.style.opacity = '0';
+            document.body.appendChild(input);
+            input.focus();
+            input.select();
+            let success = false;
+            try { success = document.execCommand('copy'); } catch (error) { success = false; }
+            document.body.removeChild(input);
+            callback(success);
+        }
+
         function getSession() {
             try { return JSON.parse(localStorage.getItem(sessionStorageName)); } catch (error) { return null; }
         }
@@ -598,7 +620,7 @@
             const session = getSession();
 
             if (hash.startsWith('acesso/')) {
-                showPersonLogin(hash.slice('acesso/'.length));
+                showPersonLogin(hash.slice('acesso/'.length).trim());
                 return;
             }
             if (hash === 'master-login') {
@@ -765,7 +787,7 @@
                             <button type="button" data-delete-usuario="${usuario.id}" aria-label="Excluir acesso" class="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-50 hover:text-red-600"><i data-lucide="trash-2" class="h-4 w-4"></i></button>
                         </div>
                     </div>
-                    <div class="mt-2 flex items-center gap-2 rounded-lg bg-slate-50 px-2 py-1.5"><span class="min-w-0 flex-1 truncate text-[10px] font-semibold text-slate-500">${escapeHtml(accessLinkFor(usuario))}</span><button type="button" data-copy-link="${escapeHtml(accessLinkFor(usuario))}" class="shrink-0 text-[10px] font-black text-indigo-500 hover:text-indigo-700">Copiar</button></div>
+                    <div class="mt-2 flex items-center gap-2 rounded-lg bg-slate-50 px-2 py-1.5"><input type="text" readonly value="${escapeHtml(accessLinkFor(usuario))}" onclick="this.select()" class="min-w-0 flex-1 truncate bg-transparent text-[10px] font-semibold text-slate-500 outline-none"><button type="button" data-copy-link="${escapeHtml(accessLinkFor(usuario))}" class="shrink-0 text-[10px] font-black text-indigo-500 hover:text-indigo-700">Copiar</button></div>
                 </div>
             `).join('') : '<p class="text-xs text-slate-400">Nenhum acesso cadastrado para esta loja.</p>';
             lucide.createIcons();
@@ -786,7 +808,7 @@
 
             document.getElementById('pessoa-login-form').addEventListener('submit', event => {
                 event.preventDefault();
-                const fullSlug = event.target.dataset.fullSlug;
+                const fullSlug = String(event.target.dataset.fullSlug || '').trim();
                 const usuario = getUsuarios().find(item => item.fullSlug === fullSlug);
                 const username = document.getElementById('pessoa-username-input').value.trim();
                 const password = document.getElementById('pessoa-password-input').value;
@@ -882,8 +904,10 @@
 
                 const copyButton = event.target.closest('[data-copy-link]');
                 if (copyButton) {
-                    const link = copyButton.dataset.copyLink;
-                    if (navigator.clipboard?.writeText) navigator.clipboard.writeText(link).then(() => { copyButton.textContent = 'Copiado!'; setTimeout(() => { copyButton.textContent = 'Copiar'; }, 1500); });
+                    copyTextRobust(copyButton.dataset.copyLink, success => {
+                        copyButton.textContent = success ? 'Copiado!' : 'Selecione e copie';
+                        setTimeout(() => { copyButton.textContent = 'Copiar'; }, 1500);
+                    });
                     return;
                 }
             });
