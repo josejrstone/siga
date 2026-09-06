@@ -24,6 +24,8 @@
         #tasks-page:not(.active) { display: none; }
         .date-carousel { scrollbar-width: none; touch-action: pan-x; }
         .date-carousel::-webkit-scrollbar { display: none; }
+        .observation-preview { max-height: 2.8em; overflow: hidden; cursor: pointer; }
+        .observation-preview.observation-expanded { max-height: none; }
     </style>
 </head>
 <body class="bg-[#FBFDFF] text-slate-900 min-h-screen pb-28">
@@ -381,6 +383,12 @@
             return container.innerHTML;
         }
 
+        function observationSummary(value) {
+            const container = document.createElement('div');
+            container.innerHTML = sanitizeObservation(value);
+            return container.textContent.trim();
+        }
+
         function renderTask(task, showActions = false) {
             const ownerLabel = task.owner === 'manager' ? 'Gerente' : 'Você';
             const locked = task.owner === 'manager';
@@ -395,7 +403,7 @@
                         <span>${ownerLabel}</span>
                         ${taskStatusLabel(task)}
                     </div>
-                    ${task.observation ? `<p class="mt-2 rounded-lg bg-white/70 px-2 py-1 text-[10px] text-slate-500">${sanitizeObservation(task.observation)}</p>` : ''}
+                    ${task.observation ? `<p role="button" tabindex="0" data-expand-observation class="observation-preview mt-2 rounded-lg bg-white/70 px-2 py-1 text-[10px] text-slate-500" aria-label="Expandir observação">${sanitizeObservation(task.observation)}</p>` : ''}
                 </div>
                 <div class="flex shrink-0 items-center gap-1">
                     <button type="button" data-observe-task="${task.id}" aria-label="Adicionar observação" class="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-white hover:text-indigo-600">
@@ -433,8 +441,12 @@
         function updateTask(taskId, changes) {
             const tasks = getTasks().map(task => task.id === taskId ? { ...task, ...changes } : task);
             saveTasks(tasks);
+            refreshTaskViews();
+        }
+
+        function refreshTaskViews() {
+            renderTasks();
             if (document.getElementById('tasks-page').classList.contains('active')) renderTasksByDate(currentSelectedDate);
-            else renderTasks();
         }
 
         let currentSelectedDate = getLocalDateKey();
@@ -454,6 +466,7 @@
                 navTasks.classList.add('text-slate-300');
                 navTasks.classList.remove('text-indigo-600');
                 indicator.style.left = '0%';
+                renderTasks();
             } else if (pageName === 'tasks') {
                 dashboard.classList.add('hidden');
                 tasksPage.classList.add('active');
@@ -465,7 +478,7 @@
                 const dateSelector = document.getElementById('task-date-selector');
                 dateSelector.value = currentSelectedDate;
                 renderDateCarousel();
-                renderTasksByDate(currentSelectedDate);
+                refreshTaskViews();
             }
         }
 
@@ -531,6 +544,8 @@
         }
 
         function initObservationEditor() {
+            const modal = document.getElementById('observation-modal');
+            if (modal.parentElement !== document.body) document.body.appendChild(modal);
             document.querySelectorAll('[data-format]').forEach(button => {
                 button.addEventListener('click', () => {
                     document.getElementById('observation-editor').focus();
@@ -624,7 +639,7 @@
                 saveTasks(tasks);
                 event.target.reset();
                 closeNewTaskModal();
-                renderTasksByDate(currentSelectedDate);
+                refreshTaskViews();
             });
             document.getElementById('task-date-selector').addEventListener('change', event => {
                 selectTaskDate(event.target.value);
@@ -651,6 +666,9 @@
                     if (task) openObservationEditor(task);
                 }
 
+                const observationPreview = event.target.closest('[data-expand-observation]');
+                if (observationPreview) observationPreview.classList.toggle('observation-expanded');
+
                 const editButton = event.target.closest('[data-edit-task]');
                 if (editButton) {
                     const task = getTasks().find(item => item.id === editButton.dataset.editTask);
@@ -666,8 +684,7 @@
                     const task = getTasks().find(item => item.id === deleteButton.dataset.deleteTask);
                     if (task && task.owner !== 'manager' && window.confirm('Excluir esta tarefa?')) {
                         saveTasks(getTasks().filter(item => item.id !== task.id));
-                        if (document.getElementById('tasks-page').classList.contains('active')) renderTasksByDate(currentSelectedDate);
-                        else renderTasks();
+                        refreshTaskViews();
                     }
                 }
             });
