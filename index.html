@@ -15,6 +15,10 @@
         .tier-diamond { background: linear-gradient(135deg, #22d3ee, #0891b2); }
         .progress-glow { box-shadow: 0 0 20px rgba(99, 102, 241, 0.2); }
         #observation-editor:empty::before { content: attr(data-placeholder); color: #94a3b8; }
+        .nav-indicator { position: absolute; bottom: 0; height: 3px; background: linear-gradient(90deg, #4f46e5, #7c3aed); border-radius: 2px 2px 0 0; transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1); }
+        main.hidden { display: none; }
+        #tasks-page.active { display: block; }
+        #tasks-page:not(.active) { display: none; }
     </style>
 </head>
 <body class="bg-[#FBFDFF] text-slate-900 min-h-screen pb-28">
@@ -34,7 +38,7 @@
         </div>
     </header>
 
-    <main class="max-w-5xl mx-auto p-4 space-y-6">
+    <main id="dashboard-page" class="max-w-5xl mx-auto p-4 space-y-6">
         
         <!-- FRASE DO DIA -->
         <section class="py-4 text-center">
@@ -131,25 +135,17 @@
         </div>
 
         <!-- TELA DE TAREFAS -->
-        <section id="tasks-page" class="hidden">
-            <div class="flex flex-wrap items-start justify-between gap-4 mb-6">
+        <section id="tasks-page" class="max-w-5xl mx-auto p-4 space-y-6">
+            <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
-                    <h2 class="text-2xl font-black text-slate-800">Tarefas do dia</h2>
+                    <h2 class="text-2xl font-black text-slate-800">Tarefas</h2>
                     <p class="mt-1 text-xs font-medium text-slate-500">Ordenadas por urgência</p>
                 </div>
-                <button type="button" id="add-task-button" class="flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-colors">
-                    <i data-lucide="plus" class="w-4 h-4"></i> Nova tarefa
-                </button>
+                <label class="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                    Selecionar data
+                    <input id="task-date-selector" type="date" class="mt-1 rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-700 outline-none focus:border-indigo-400">
+                </label>
             </div>
-            <form id="task-form" class="hidden mb-6 grid gap-3 rounded-2xl bg-white p-4 border border-slate-100 md:grid-cols-[1fr_150px_auto]">
-                <label class="text-[10px] font-black uppercase tracking-wider text-slate-400">Tarefa
-                    <input id="task-title-input" required maxlength="80" placeholder="Ex.: Retornar orçamento" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-700 outline-none focus:border-indigo-400">
-                </label>
-                <label class="text-[10px] font-black uppercase tracking-wider text-slate-400">Horário
-                    <input id="task-time-input" required type="time" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-700 outline-none focus:border-indigo-400">
-                </label>
-                <button type="submit" class="self-end rounded-xl bg-emerald-500 px-4 py-2.5 text-xs font-bold text-white hover:bg-emerald-600">Adicionar</button>
-            </form>
             <div id="tasks-list" class="space-y-3"></div>
         </section>
 
@@ -260,29 +256,55 @@
     </main>
 
     <!-- FAB -->
-    <button class="fixed bottom-24 right-6 md:bottom-10 md:right-10 w-16 h-16 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-2xl shadow-indigo-300 hover:scale-110 active:scale-95 transition-all z-50">
+    <button id="fab-button" class="fixed bottom-24 right-6 md:bottom-10 md:right-10 w-16 h-16 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-2xl shadow-indigo-300 hover:scale-110 active:scale-95 transition-all z-50">
         <i data-lucide="plus" class="w-8 h-8"></i>
     </button>
 
+    <!-- MODAL DE NOVA TAREFA -->
+    <div id="new-task-modal" class="fixed inset-0 z-[70] hidden items-center justify-center bg-slate-900/40 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="new-task-title">
+        <div class="w-full max-w-md overflow-hidden rounded-[2rem] bg-white shadow-2xl">
+            <div class="flex items-start justify-between border-b border-slate-100 p-5">
+                <div>
+                    <p class="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-500">Nova tarefa</p>
+                    <h2 id="new-task-title" class="mt-1 text-lg font-black text-slate-800">Adicionar tarefa</h2>
+                </div>
+                <button type="button" id="close-new-task" aria-label="Fechar" class="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+            <form id="new-task-form" class="p-5 space-y-3">
+                <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400">Tarefa
+                    <input id="new-task-title-input" required maxlength="80" placeholder="Ex.: Retornar orçamento" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-700 outline-none focus:border-indigo-400">
+                </label>
+                <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400">Horário
+                    <input id="new-task-time-input" required type="time" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-700 outline-none focus:border-indigo-400">
+                </label>
+                <div class="flex justify-end gap-2 pt-4">
+                    <button type="button" id="cancel-new-task" class="rounded-xl px-4 py-2.5 text-xs font-bold text-slate-500 hover:bg-slate-100">Cancelar</button>
+                    <button type="submit" class="rounded-xl bg-emerald-500 px-5 py-2.5 text-xs font-bold text-white hover:bg-emerald-600">Adicionar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- NAV MOBILE -->
-    <nav class="md:hidden fixed bottom-0 left-0 right-0 h-20 bg-white/80 backdrop-blur-xl border-t border-slate-100 flex items-center justify-around px-4 z-40">
-        <div class="flex flex-col items-center gap-1 text-indigo-600">
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 h-20 bg-white/80 backdrop-blur-xl border-t border-slate-100 flex items-center justify-around px-4 z-40 relative">
+        <div class="nav-indicator" id="nav-indicator" style="width: 20%; left: 0;"></div>
+        <button type="button" id="nav-inicio" class="flex flex-col items-center gap-1 text-indigo-600 flex-1 relative z-10 py-1 transition-colors">
             <i data-lucide="layout-grid" class="w-6 h-6"></i>
             <span class="text-[9px] font-black uppercase tracking-widest">Início</span>
-        </div>
-        <div class="flex flex-col items-center gap-1 text-slate-300">
+        </button>
+        <div class="flex flex-col items-center gap-1 text-slate-300 flex-1 py-1">
             <i data-lucide="phone-forwarded" class="w-6 h-6"></i>
             <span class="text-[9px] font-black uppercase tracking-widest">CRM</span>
         </div>
-        <div class="flex flex-col items-center gap-1 text-slate-300">
+        <div class="flex flex-col items-center gap-1 text-slate-300 flex-1 py-1">
             <i data-lucide="shopping-bag" class="w-6 h-6"></i>
             <span class="text-[9px] font-black uppercase tracking-widest">Vendas</span>
         </div>
-        <button type="button" id="nav-tasks" class="flex flex-col items-center gap-1 text-slate-300">
+        <button type="button" id="nav-tasks" class="flex flex-col items-center gap-1 text-slate-300 flex-1 relative z-10 py-1 transition-colors">
             <i data-lucide="check-square" class="w-6 h-6"></i>
             <span class="text-[9px] font-black uppercase tracking-widest">Tarefas</span>
         </button>
-        <div class="flex flex-col items-center gap-1 text-slate-300">
+        <div class="flex flex-col items-center gap-1 text-slate-300 flex-1 py-1">
             <i data-lucide="settings" class="w-6 h-6"></i>
             <span class="text-[9px] font-black uppercase tracking-widest">Menu</span>
         </div>
@@ -293,9 +315,9 @@
 
         const taskStorageKey = 'siga-tarefas';
         const defaultTasks = [
-            { id: 'manager-1', title: 'Reunião de alinhamento comercial', time: '09:00', owner: 'manager', completed: false, observation: '' },
-            { id: 'manager-2', title: 'Retornar orçamentos prioritários', time: '11:30', owner: 'manager', completed: false, observation: '' },
-            { id: 'manager-3', title: 'Atualizar follow-up dos clientes', time: '16:00', owner: 'manager', completed: false, observation: '' }
+            { id: 'manager-1', title: 'Reunião de alinhamento comercial', time: '09:00', owner: 'manager', completed: false, observation: '', date: '' },
+            { id: 'manager-2', title: 'Retornar orçamentos prioritários', time: '11:30', owner: 'manager', completed: false, observation: '', date: '' },
+            { id: 'manager-3', title: 'Atualizar follow-up dos clientes', time: '16:00', owner: 'manager', completed: false, observation: '', date: '' }
         ];
 
         function getTasks() {
@@ -346,7 +368,7 @@
         }
 
         function renderTask(task, showActions = false) {
-            const ownerLabel = task.owner === 'manager' ? '👔 Gerente' : '👤 Você';
+            const ownerLabel = task.owner === 'manager' ? 'Gerente' : 'Você';
             const locked = task.owner === 'manager';
             return `<article class="task-item flex items-center gap-3 rounded-2xl border p-3 ${taskStatusClasses(task)} transition-colors" data-task-id="${task.id}">
                 <button type="button" data-toggle-task="${task.id}" aria-label="${task.completed ? 'Reabrir' : 'Concluir'} tarefa" class="w-6 h-6 shrink-0 rounded-lg border-2 ${task.completed ? 'border-emerald-500 bg-emerald-500 text-white' : 'border-indigo-200 bg-white'} flex items-center justify-center">
@@ -368,6 +390,11 @@
                     ${showActions && !locked ? `<button type="button" data-edit-task="${task.id}" aria-label="Editar tarefa" class="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-white hover:text-indigo-600"><i data-lucide="pencil" class="w-4 h-4"></i></button><button type="button" data-delete-task="${task.id}" aria-label="Excluir tarefa" class="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-white hover:text-red-600"><i data-lucide="trash-2" class="w-4 h-4"></i></button>` : ''}
                 </div>
             </article>`;
+        }
+
+        function getLocalDateKey() {
+            const today = new Date();
+            return today.toISOString().split('T')[0];
         }
 
         function sortedTasks() {
@@ -395,26 +422,42 @@
             renderTasks();
         }
 
-        function toggleTasksView() {
-            const routineSection = document.getElementById('routine-preview').closest('section');
+        let currentSelectedDate = getLocalDateKey();
+
+        function showPage(pageName) {
+            const dashboard = document.getElementById('dashboard-page');
             const tasksPage = document.getElementById('tasks-page');
-            const navBtn = document.getElementById('nav-tasks');
-            const isShowingTasks = !tasksPage.classList.contains('hidden');
-            tasksPage.classList.toggle('hidden');
-            routineSection.parentElement.classList.toggle('hidden');
-            if (!isShowingTasks) {
-                navBtn.classList.remove('text-slate-300');
-                navBtn.classList.add('text-indigo-600');
-                renderTasks();
-            } else {
-                navBtn.classList.add('text-slate-300');
-                navBtn.classList.remove('text-indigo-600');
+            const navInicio = document.getElementById('nav-inicio');
+            const navTasks = document.getElementById('nav-tasks');
+            const indicator = document.getElementById('nav-indicator');
+
+            if (pageName === 'dashboard') {
+                dashboard.classList.remove('hidden');
+                tasksPage.classList.remove('active');
+                navInicio.classList.remove('text-slate-300');
+                navInicio.classList.add('text-indigo-600');
+                navTasks.classList.add('text-slate-300');
+                navTasks.classList.remove('text-indigo-600');
+                indicator.style.left = '0%';
+            } else if (pageName === 'tasks') {
+                dashboard.classList.add('hidden');
+                tasksPage.classList.add('active');
+                navInicio.classList.add('text-slate-300');
+                navInicio.classList.remove('text-indigo-600');
+                navTasks.classList.remove('text-slate-300');
+                navTasks.classList.add('text-indigo-600');
+                indicator.style.left = '80%';
+                renderTasksByDate(currentSelectedDate);
             }
         }
 
-        function openTasksPage() {
-            const tasksPage = document.getElementById('tasks-page');
-            if (tasksPage.classList.contains('hidden')) toggleTasksView();
+        function renderTasksByDate(dateKey) {
+            const tasks = sortedTasks().filter(task => {
+                const taskDate = dateKey || getLocalDateKey();
+                return !taskDate || task.date === taskDate;
+            });
+            document.getElementById('tasks-list').innerHTML = tasks.length ? tasks.map(task => renderTask(task, true)).join('') : '<p class="rounded-2xl bg-white p-4 text-xs text-slate-400">Nenhuma tarefa para este dia.</p>';
+            lucide.createIcons();
         }
 
         let observationTaskId = null;
@@ -483,8 +526,43 @@
             window.setInterval(checkTaskNotifications, 15000);
         }
 
+        function openNewTaskModal() {
+            document.getElementById('new-task-modal').classList.remove('hidden');
+            document.getElementById('new-task-modal').classList.add('flex');
+            document.getElementById('new-task-title-input').focus();
+        }
+
+        function closeNewTaskModal() {
+            document.getElementById('new-task-modal').classList.add('hidden');
+            document.getElementById('new-task-modal').classList.remove('flex');
+        }
+
         function bindTaskActions() {
-            document.getElementById('nav-tasks').addEventListener('click', toggleTasksView);
+            document.getElementById('nav-inicio').addEventListener('click', () => showPage('dashboard'));
+            document.getElementById('nav-tasks').addEventListener('click', () => showPage('tasks'));
+            document.getElementById('fab-button').addEventListener('click', () => {
+                const tasksPage = document.getElementById('tasks-page');
+                if (tasksPage.classList.contains('active')) openNewTaskModal();
+            });
+            document.getElementById('close-new-task').addEventListener('click', closeNewTaskModal);
+            document.getElementById('cancel-new-task').addEventListener('click', closeNewTaskModal);
+            document.getElementById('new-task-form').addEventListener('submit', event => {
+                event.preventDefault();
+                const title = document.getElementById('new-task-title-input').value.trim();
+                const time = document.getElementById('new-task-time-input').value;
+                if (!title || !time) return;
+                const tasks = getTasks();
+                tasks.push({ id: `user-${Date.now()}`, title, time, owner: 'user', completed: false, observation: '', date: currentSelectedDate });
+                saveTasks(tasks);
+                event.target.reset();
+                closeNewTaskModal();
+                renderTasksByDate(currentSelectedDate);
+            });
+            document.getElementById('task-date-selector').addEventListener('change', event => {
+                currentSelectedDate = event.target.value;
+                renderTasksByDate(currentSelectedDate);
+            });
+            document.getElementById('task-date-selector').valueAsDate = new Date();
             document.addEventListener('click', event => {
                 const toggleButton = event.target.closest('[data-toggle-task]');
                 if (toggleButton) {
