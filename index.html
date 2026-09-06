@@ -113,19 +113,15 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Rotina -->
             <section class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
-                <h3 class="text-sm font-black text-slate-800 uppercase tracking-widest mb-4 flex items-center gap-2">
-                    <i data-lucide="list-checks" class="w-4 h-4 text-indigo-500"></i> Minha Rotina
-                </h3>
-                <div class="space-y-3">
-                    <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl group cursor-pointer">
-                        <div class="w-5 h-5 border-2 border-indigo-200 rounded-lg group-hover:bg-indigo-500 transition-colors"></div>
-                        <span class="text-xs font-semibold text-slate-600 italic">Retornar Orçamentos (3)</span>
-                    </div>
-                    <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl group cursor-pointer">
-                        <div class="w-5 h-5 border-2 border-indigo-200 rounded-lg group-hover:bg-indigo-500 transition-colors"></div>
-                        <span class="text-xs font-semibold text-slate-600 italic">Follow-up Clientes Prata</span>
-                    </div>
+                <div class="flex items-center justify-between gap-3 mb-4">
+                    <h3 class="text-sm font-black text-slate-800 uppercase tracking-widest flex items-center gap-2">
+                        <i data-lucide="list-checks" class="w-4 h-4 text-indigo-500"></i> Minha Rotina
+                    </h3>
+                    <button type="button" data-open-tasks aria-label="Abrir todas as tarefas" class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center hover:bg-indigo-100 transition-colors">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                    </button>
                 </div>
+                <div id="routine-preview" class="space-y-3"></div>
             </section>
 
             <!-- Dica de Venda -->
@@ -137,6 +133,32 @@
                 </p>
             </section>
         </div>
+
+        <!-- TELA DE TAREFAS -->
+        <section id="tasks-page" class="hidden bg-slate-50 rounded-[2.5rem] p-5 md:p-8 border border-slate-100">
+            <div class="flex flex-wrap items-start justify-between gap-4 mb-6">
+                <div>
+                    <button type="button" data-close-tasks class="mb-3 flex items-center gap-2 text-xs font-bold text-indigo-600 hover:text-indigo-800">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i> Voltar ao painel
+                    </button>
+                    <h2 class="text-2xl font-black text-slate-800">Tarefas detalhadas</h2>
+                    <p class="mt-1 text-xs font-medium text-slate-500">Organizadas pelo horário de realização</p>
+                </div>
+                <button type="button" id="add-task-button" class="flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-colors">
+                    <i data-lucide="plus" class="w-4 h-4"></i> Nova tarefa
+                </button>
+            </div>
+            <form id="task-form" class="hidden mb-6 grid gap-3 rounded-2xl bg-white p-4 border border-slate-100 md:grid-cols-[1fr_150px_auto]">
+                <label class="text-[10px] font-black uppercase tracking-wider text-slate-400">Tarefa
+                    <input id="task-title-input" required maxlength="80" placeholder="Ex.: Retornar orçamento" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-700 outline-none focus:border-indigo-400">
+                </label>
+                <label class="text-[10px] font-black uppercase tracking-wider text-slate-400">Horário
+                    <input id="task-time-input" required type="time" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-700 outline-none focus:border-indigo-400">
+                </label>
+                <button type="submit" class="self-end rounded-xl bg-emerald-500 px-4 py-2.5 text-xs font-bold text-white hover:bg-emerald-600">Adicionar</button>
+            </form>
+            <div id="tasks-list" class="space-y-3"></div>
+        </section>
 
         <!-- LISTA DE VENDAS E HUMOR -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -236,6 +258,10 @@
             <i data-lucide="shopping-bag" class="w-6 h-6"></i>
             <span class="text-[9px] font-black uppercase tracking-widest">Vendas</span>
         </div>
+        <button type="button" data-open-tasks class="flex flex-col items-center gap-1 text-slate-300">
+            <i data-lucide="check-square" class="w-6 h-6"></i>
+            <span class="text-[9px] font-black uppercase tracking-widest">Tarefas</span>
+        </button>
         <div class="flex flex-col items-center gap-1 text-slate-300">
             <i data-lucide="settings" class="w-6 h-6"></i>
             <span class="text-[9px] font-black uppercase tracking-widest">Menu</span>
@@ -244,6 +270,162 @@
 
     <script>
         lucide.createIcons();
+
+        const taskStorageKey = 'siga-tarefas';
+        const defaultTasks = [
+            { id: 'manager-1', title: 'Reunião de alinhamento comercial', time: '09:00', owner: 'manager', completed: false, observation: '' },
+            { id: 'manager-2', title: 'Retornar orçamentos prioritários', time: '11:30', owner: 'manager', completed: false, observation: '' },
+            { id: 'manager-3', title: 'Atualizar follow-up dos clientes', time: '16:00', owner: 'manager', completed: false, observation: '' }
+        ];
+
+        function getTasks() {
+            try {
+                const savedTasks = JSON.parse(localStorage.getItem(taskStorageKey));
+                return Array.isArray(savedTasks) && savedTasks.length ? savedTasks : defaultTasks;
+            } catch (error) {
+                return defaultTasks;
+            }
+        }
+
+        function saveTasks(tasks) {
+            localStorage.setItem(taskStorageKey, JSON.stringify(tasks));
+        }
+
+        function isTaskOverdue(task) {
+            if (task.completed) return false;
+            const now = new Date();
+            const [hours, minutes] = task.time.split(':').map(Number);
+            return hours < now.getHours() || (hours === now.getHours() && minutes < now.getMinutes());
+        }
+
+        function taskStatusClasses(task) {
+            if (task.completed) return 'border-emerald-200 bg-emerald-50';
+            if (isTaskOverdue(task)) return 'border-red-200 bg-red-50';
+            return 'border-slate-100 bg-white';
+        }
+
+        function taskStatusLabel(task) {
+            if (task.completed) return '<span class="text-emerald-600">Cumprida</span>';
+            if (isTaskOverdue(task)) return '<span class="text-red-600">Vencida</span>';
+            return '<span class="text-amber-600">Pendente</span>';
+        }
+
+        function renderTask(task, detailed = false) {
+            const ownerLabel = task.owner === 'manager' ? 'Gerente' : 'Você';
+            const locked = task.owner === 'manager';
+            return `<article class="task-item flex items-center gap-3 rounded-2xl border p-3 ${taskStatusClasses(task)} transition-colors" data-task-id="${task.id}">
+                <button type="button" data-toggle-task="${task.id}" aria-label="${task.completed ? 'Reabrir' : 'Concluir'} tarefa" class="w-6 h-6 shrink-0 rounded-lg border-2 ${task.completed ? 'border-emerald-500 bg-emerald-500 text-white' : 'border-indigo-200 bg-white'} flex items-center justify-center">
+                    ${task.completed ? '<i data-lucide="check" class="w-4 h-4"></i>' : ''}
+                </button>
+                <div class="min-w-0 flex-1">
+                    <p class="truncate text-xs font-bold ${task.completed ? 'text-emerald-800 line-through' : 'text-slate-700'}">${task.title}</p>
+                    <div class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] font-semibold text-slate-400">
+                        <span class="flex items-center gap-1"><i data-lucide="clock-3" class="w-3 h-3"></i>${task.time}</span>
+                        <span>${ownerLabel}</span>
+                        ${taskStatusLabel(task)}
+                    </div>
+                    ${detailed && task.observation ? `<p class="mt-2 rounded-lg bg-white/70 px-2 py-1 text-[10px] italic text-slate-500">${task.observation}</p>` : ''}
+                </div>
+                <div class="flex shrink-0 items-center gap-1">
+                    <button type="button" data-observe-task="${task.id}" aria-label="Adicionar observação" class="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-white hover:text-indigo-600">
+                        <i data-lucide="message-square-plus" class="w-4 h-4"></i>
+                    </button>
+                    ${detailed && !locked ? `<button type="button" data-edit-task="${task.id}" aria-label="Editar tarefa" class="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-white hover:text-indigo-600"><i data-lucide="pencil" class="w-4 h-4"></i></button><button type="button" data-delete-task="${task.id}" aria-label="Excluir tarefa" class="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-white hover:text-red-600"><i data-lucide="trash-2" class="w-4 h-4"></i></button>` : ''}
+                </div>
+            </article>`;
+        }
+
+        function sortedTasks() {
+            return getTasks().sort((first, second) => first.time.localeCompare(second.time));
+        }
+
+        function renderTasks() {
+            const tasks = sortedTasks();
+            document.getElementById('routine-preview').innerHTML = tasks.slice(-3).map(task => renderTask(task)).join('');
+            document.getElementById('tasks-list').innerHTML = tasks.map(task => renderTask(task, true)).join('');
+            lucide.createIcons();
+        }
+
+        function updateTask(taskId, changes) {
+            const tasks = getTasks().map(task => task.id === taskId ? { ...task, ...changes } : task);
+            saveTasks(tasks);
+            renderTasks();
+        }
+
+        function openTasksPage() {
+            document.getElementById('tasks-page').classList.remove('hidden');
+            document.getElementById('tasks-page').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            renderTasks();
+        }
+
+        function closeTasksPage() {
+            document.getElementById('tasks-page').classList.add('hidden');
+        }
+
+        function bindTaskActions() {
+            document.addEventListener('click', event => {
+                const openButton = event.target.closest('[data-open-tasks]');
+                if (openButton) openTasksPage();
+                if (event.target.closest('[data-close-tasks]')) closeTasksPage();
+
+                const toggleButton = event.target.closest('[data-toggle-task]');
+                if (toggleButton) {
+                    const task = getTasks().find(item => item.id === toggleButton.dataset.toggleTask);
+                    if (task) updateTask(task.id, { completed: !task.completed });
+                }
+
+                const observationButton = event.target.closest('[data-observe-task]');
+                if (observationButton) {
+                    const task = getTasks().find(item => item.id === observationButton.dataset.observeTask);
+                    if (task) {
+                        const observation = window.prompt('Observação da tarefa:', task.observation || '');
+                        if (observation !== null) updateTask(task.id, { observation: observation.trim() });
+                    }
+                }
+
+                const editButton = event.target.closest('[data-edit-task]');
+                if (editButton) {
+                    const task = getTasks().find(item => item.id === editButton.dataset.editTask);
+                    if (!task || task.owner === 'manager') return;
+                    const title = window.prompt('Nome da tarefa:', task.title);
+                    if (title === null || !title.trim()) return;
+                    const time = window.prompt('Horário (HH:MM):', task.time);
+                    if (time && /^([01]\d|2[0-3]):[0-5]\d$/.test(time)) updateTask(task.id, { title: title.trim(), time });
+                }
+
+                const deleteButton = event.target.closest('[data-delete-task]');
+                if (deleteButton) {
+                    const task = getTasks().find(item => item.id === deleteButton.dataset.deleteTask);
+                    if (task && task.owner !== 'manager' && window.confirm('Excluir esta tarefa?')) {
+                        saveTasks(getTasks().filter(item => item.id !== task.id));
+                        renderTasks();
+                    }
+                }
+            });
+        }
+
+        function initTasks() {
+            if (!localStorage.getItem(taskStorageKey)) saveTasks(defaultTasks);
+            renderTasks();
+            bindTaskActions();
+            document.getElementById('add-task-button').addEventListener('click', () => {
+                document.getElementById('task-form').classList.toggle('hidden');
+                document.getElementById('task-title-input').focus();
+            });
+            document.getElementById('task-form').addEventListener('submit', event => {
+                event.preventDefault();
+                const titleInput = document.getElementById('task-title-input');
+                const timeInput = document.getElementById('task-time-input');
+                const tasks = getTasks();
+                tasks.push({ id: `user-${Date.now()}`, title: titleInput.value.trim(), time: timeInput.value, owner: 'user', completed: false, observation: '' });
+                saveTasks(tasks);
+                event.target.reset();
+                event.target.classList.add('hidden');
+                renderTasks();
+            });
+        }
+
+        initTasks();
 
         const moodOptions = [
             { id: 'muito-mal', emoji: '😔', label: 'Muito mal' },
