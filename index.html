@@ -172,7 +172,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="md:col-span-2 bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-sm font-black text-slate-800 uppercase tracking-widest flex items-center gap-2">
+                    <h3 id="dashboard-sales-title" role="button" tabindex="0" class="text-sm font-black text-slate-800 uppercase tracking-widest flex items-center gap-2 cursor-pointer">
                         <i data-lucide="shopping-cart" class="w-4 h-4 text-indigo-600"></i> Vendas Hoje
                     </h3>
                     <button type="button" id="open-sales-from-dashboard" class="text-[10px] font-black uppercase tracking-wider text-indigo-500">Ver detalhes</button>
@@ -211,6 +211,11 @@
                 </div>
             </div>
         </div>
+
+        <section class="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-sm">
+            <div class="mb-4 flex items-center justify-between"><h3 id="dashboard-service-title" role="button" tabindex="0" class="flex cursor-pointer items-center gap-2 text-sm font-black uppercase tracking-widest text-slate-800"><i data-lucide="users" class="h-4 w-4 text-indigo-500"></i> Últimos atendimentos</h3><button type="button" id="open-service-from-dashboard" class="text-[10px] font-black uppercase tracking-wider text-indigo-500">Ver detalhes</button></div>
+            <div id="dashboard-service-summary" class="grid gap-2 md:grid-cols-3"></div>
+        </section>
 
         <!-- RANKING SIMPLIFICADO -->
         <section class="bg-slate-50 p-8 rounded-[3rem] border border-slate-100">
@@ -275,14 +280,14 @@
             <div id="sales-date-carousel" class="date-carousel flex snap-x snap-mandatory gap-2 overflow-x-auto pb-1"></div>
             <div id="sales-week-days" class="mt-3 hidden grid gap-3 md:grid-cols-2">
                 <label class="text-[10px] font-black uppercase tracking-wider text-slate-400">Início da semana
-                    <input id="sales-week-start" type="date" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-bold text-slate-700">
+                    <span class="mt-1 flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3"><input id="sales-week-start" type="date" class="w-full border-0 px-0 py-2 text-sm font-bold text-slate-700 outline-none"><i data-lucide="calendar-days" class="h-4 w-4 text-indigo-500"></i></span>
                 </label>
                 <label class="text-[10px] font-black uppercase tracking-wider text-slate-400">Fim da semana
-                    <input id="sales-week-end" type="date" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-bold text-slate-700">
+                    <span class="mt-1 flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3"><input id="sales-week-end" type="date" class="w-full border-0 px-0 py-2 text-sm font-bold text-slate-700 outline-none"><i data-lucide="calendar-days" class="h-4 w-4 text-indigo-500"></i></span>
                 </label>
             </div>
             <label id="sales-month-picker" class="mt-3 hidden text-[10px] font-black uppercase tracking-wider text-slate-400">Mês de referência
-                <input id="sales-month-selector" type="month" class="mt-1 rounded-xl border border-slate-200 px-3 py-2 text-sm font-bold text-slate-700">
+                <span id="sales-month-label" class="mt-1 block text-sm font-black capitalize text-indigo-600"></span><input id="sales-month-selector" type="month" class="sr-only" tabindex="-1" aria-hidden="true">
             </label>
         </div>
         <section class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
@@ -578,6 +583,7 @@
                 navService.classList.add('text-slate-300'); navService.classList.remove('text-indigo-600');
                 indicator.style.left = '0%';
                 renderTasks();
+                renderDashboardServices();
             } else if (pageName === 'tasks') {
                 dashboard.classList.add('hidden');
                 salesPage.classList.add('hidden');
@@ -710,13 +716,16 @@
             document.getElementById('sales-month-selector').value = salesSelectedMonth;
             document.getElementById('sales-total').textContent = money(total);
             document.getElementById('sales-count').textContent = `${periodSales.length} registro${periodSales.length === 1 ? '' : 's'}`;
-            document.getElementById('sales-period-label').textContent = salesPeriod === 'day' ? `Vendas de ${new Date(`${salesSelectedDate}T12:00:00`).toLocaleDateString('pt-BR')}` : salesPeriod === 'month' ? `Vendas de ${salesSelectedMonth}` : `Vendas de ${new Date(`${salesWeekStart}T12:00:00`).toLocaleDateString('pt-BR')} até ${new Date(`${salesWeekEnd}T12:00:00`).toLocaleDateString('pt-BR')}`;
+            const monthLabel = new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' }).format(new Date(`${salesSelectedMonth}-01T12:00:00`));
+            document.getElementById('sales-month-label').textContent = monthLabel;
+            document.getElementById('sales-period-label').textContent = salesPeriod === 'day' ? `Vendas de ${new Date(`${salesSelectedDate}T12:00:00`).toLocaleDateString('pt-BR')}` : salesPeriod === 'month' ? `Vendas de ${monthLabel}` : `Vendas de ${new Date(`${salesWeekStart}T12:00:00`).toLocaleDateString('pt-BR')} até ${new Date(`${salesWeekEnd}T12:00:00`).toLocaleDateString('pt-BR')}`;
             const productsReport = {};
             periodSales.forEach(sale => (sale.products || []).forEach(product => { const key = product.name || product; productsReport[key] = (productsReport[key] || 0) + 1; }));
             const reportEntries = Object.entries(productsReport).sort((first, second) => second[1] - first[1]);
             document.getElementById('sales-products-report').innerHTML = reportEntries.length ? reportEntries.map(([name, quantity]) => `<div class="flex items-center justify-between rounded-xl bg-slate-50 px-3 py-2"><span class="text-xs font-bold text-slate-600">${escapeHtml(name)}</span><strong class="text-xs font-black text-indigo-600">${quantity}</strong></div>`).join('') : '<p class="text-xs text-slate-400">Nenhum produto registrado neste período.</p>';
             document.getElementById('sales-list').innerHTML = periodSales.length ? periodSales.map(sale => `<article class="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm"><div class="flex items-start justify-between gap-3"><div><p class="text-sm font-bold text-slate-700">${escapeHtml(sale.client || 'Cliente não informado')}</p><p class="mt-1 text-[10px] font-semibold text-slate-400">${new Date(sale.datetime).toLocaleDateString('pt-BR')} às ${new Date(sale.datetime).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</p></div><div class="flex items-center gap-2"><strong class="text-sm font-black text-emerald-600">${money(sale.value)}</strong><button type="button" data-edit-sale="${sale.id}" aria-label="Editar venda" class="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-50 hover:text-indigo-600"><i data-lucide="pencil" class="h-4 w-4"></i></button><button type="button" data-delete-sale="${sale.id}" aria-label="Excluir venda" class="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-50 hover:text-red-600"><i data-lucide="trash-2" class="h-4 w-4"></i></button></div></div><div class="mt-3 flex flex-wrap gap-1">${(sale.products || []).map(product => `<span class="rounded-full bg-indigo-50 px-2 py-1 text-[10px] font-bold text-indigo-600">${escapeHtml(product.name || product)}${product.gender ? ` · ${escapeHtml(product.gender)}` : ''}</span>`).join('')}</div></article>`).join('') : '<p class="rounded-2xl bg-white p-5 text-xs text-slate-400">Nenhuma venda registrada neste período.</p>';
             renderDashboardSales();
+            renderDashboardServices();
             renderSalesDateCarousel();
             lucide.createIcons();
         }
@@ -732,11 +741,17 @@
         }
 
         function renderProductOptionsInto(targetId, selectedProducts = []) {
-            document.getElementById(targetId).innerHTML = saleProducts.map(product => {
+            const productList = [...saleProducts].sort((first, second) => first === 'Outros' ? 1 : second === 'Outros' ? -1 : first.localeCompare(second, 'pt-BR'));
+            const target = document.getElementById(targetId);
+            target.innerHTML = productList.map(product => {
                 const selected = selectedProducts.find(item => (item.name || item) === product);
                 const gender = selected?.gender || '';
                 return `<div data-sale-product="${escapeHtml(product)}" class="sale-product-card rounded-xl border p-2 ${selected ? 'border-indigo-500 bg-indigo-50' : 'border-slate-200 bg-white'}"><button type="button" class="w-full text-left text-[11px] font-bold text-slate-600">${product}</button>${productsWithGender.has(product) && selected ? `<select data-sale-gender="${escapeHtml(product)}" class="mt-2 w-full rounded-lg border border-slate-200 bg-white px-2 py-1 text-[10px] font-bold text-slate-600"><option value="">Sem gênero</option><option ${gender === 'Masculino' ? 'selected' : ''}>Masculino</option><option ${gender === 'Feminino' ? 'selected' : ''}>Feminino</option></select>` : ''}</div>`;
             }).join('');
+            const toggleId = `${targetId}-expand`;
+            let toggle = document.getElementById(toggleId);
+            if (!toggle) { toggle = document.createElement('button'); toggle.type = 'button'; toggle.id = toggleId; toggle.className = 'mt-2 text-[10px] font-black uppercase tracking-wider text-indigo-500'; target.parentElement.appendChild(toggle); toggle.addEventListener('click', () => { const expanded = target.classList.contains('max-h-none'); target.classList.remove('max-h-44', 'max-h-52', 'max-h-none'); target.classList.add(expanded ? (targetId === 'service-product-options' ? 'max-h-44' : 'max-h-52') : 'max-h-none'); toggle.textContent = expanded ? 'Ver todos os produtos' : 'Recolher produtos'; }); }
+            toggle.textContent = target.classList.contains('max-h-none') ? 'Recolher produtos' : 'Ver todos os produtos';
         }
 
         function getSelectedSaleProducts(targetId = 'sale-product-options') {
@@ -755,7 +770,10 @@
         function saveServices(services) { localStorage.setItem(serviceStorageKey, JSON.stringify(services)); }
 
         function servicesInPeriod() {
-            const services = getServices();
+            const savedServices = getServices();
+            const linkedSales = new Set(savedServices.map(item => item.saleId).filter(Boolean));
+            const standaloneSales = getSales().filter(sale => !linkedSales.has(sale.id)).map(sale => ({ id: `sale-service-${sale.id}`, saleId: sale.id, client: sale.client, outcome: 'converted', outcomeLabel: 'Venda realizada', value: sale.value, products: sale.products || [], notes: 'Venda registrada diretamente na tela de vendas.', datetime: sale.datetime, date: sale.date }));
+            const services = [...savedServices, ...standaloneSales];
             if (servicePeriod === 'month') return services.filter(item => item.date.slice(0, 7) === serviceSelectedDate.slice(0, 7));
             if (servicePeriod === 'week') {
                 const date = new Date(`${serviceSelectedDate}T12:00:00`); const day = date.getDay() || 7; const start = new Date(date); start.setDate(date.getDate() - day + 1); const end = new Date(start); end.setDate(start.getDate() + 6);
@@ -780,11 +798,48 @@
             renderServiceDateCarousel(); lucide.createIcons();
         }
 
+        function renderDashboardServices() {
+            const services = servicesInPeriod().sort((first, second) => second.datetime.localeCompare(first.datetime)).slice(0, 3);
+            document.getElementById('dashboard-service-summary').innerHTML = services.length ? services.map(item => `<div class="rounded-xl bg-slate-50 p-3"><div class="flex items-center justify-between gap-2"><span class="truncate text-xs font-bold text-slate-700">${escapeHtml(item.client || 'Cliente não informado')}</span><span class="text-[10px] font-black text-indigo-600">${escapeHtml(item.outcomeLabel)}</span></div><p class="mt-1 text-[10px] text-slate-400">${new Date(item.datetime).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}${item.notes ? ` · ${escapeHtml(item.notes)}` : ''}</p></div>`).join('') : '<p class="text-xs text-slate-400">Nenhum atendimento registrado hoje.</p>';
+        }
+
         function showServicePeriod(period) { servicePeriod = period; document.querySelectorAll('.service-period-button').forEach(button => { const active = button.dataset.servicePeriod === period; button.classList.toggle('bg-white', active); button.classList.toggle('text-indigo-600', active); }); renderServices(); }
 
-        function openServiceModal(service = null) { editingServiceId = service?.id || null; document.getElementById('service-form').reset(); document.getElementById('service-outcome').value = service?.outcome || 'converted'; document.getElementById('service-client').value = service?.client || ''; document.getElementById('service-value').value = service?.value || ''; document.getElementById('service-demand').value = service?.demand || ''; document.getElementById('service-notes').value = service?.notes || ''; renderProductOptionsInto('service-product-options', service?.products || []); updateServiceFields(); const modal = document.getElementById('service-modal'); modal.classList.remove('hidden'); modal.classList.add('flex'); }
+        function openServiceModal(service = null) { editingServiceId = service?.id || null; document.getElementById('service-form').reset(); document.getElementById('service-outcome').value = service?.outcome || ''; document.getElementById('service-client').value = service?.client || ''; document.getElementById('service-value').value = service?.value || ''; document.getElementById('service-demand').value = service?.demand || ''; document.getElementById('service-notes').value = service?.notes || ''; const outcomeCards = document.getElementById('service-outcome-cards'); outcomeCards.classList.toggle('hidden', Boolean(service)); document.getElementById('service-outcome-expand').classList.toggle('hidden', !service); document.querySelectorAll('.service-outcome-card').forEach(card => { const selected = card.dataset.serviceOutcomeCard === service?.outcome; card.classList.toggle('border-indigo-500', selected); card.classList.toggle('bg-indigo-50', selected); }); renderProductOptionsInto('service-product-options', service?.products || []); updateServiceFields(); const modal = document.getElementById('service-modal'); modal.classList.remove('hidden'); modal.classList.add('flex'); }
         function closeServiceModal() { editingServiceId = null; const modal = document.getElementById('service-modal'); modal.classList.add('hidden'); modal.classList.remove('flex'); }
-        function updateServiceFields() { const converted = document.getElementById('service-outcome').value === 'converted'; document.getElementById('service-sale-fields').classList.toggle('hidden', !converted); document.getElementById('service-reason-fields').classList.toggle('hidden', converted); }
+        function updateServiceFields() { const outcome = document.getElementById('service-outcome').value; const converted = outcome === 'converted'; document.getElementById('service-sale-fields').classList.toggle('hidden', !converted); document.getElementById('service-reason-fields').classList.toggle('hidden', converted || !outcome); }
+
+        function initServiceOutcomeCards() {
+            const select = document.getElementById('service-outcome');
+            const options = Array.from(select.options).map(option => ({ value: option.value, label: option.textContent }));
+            select.classList.add('hidden');
+            const wrapper = document.createElement('div');
+            wrapper.id = 'service-outcome-cards';
+            wrapper.className = 'grid grid-cols-2 gap-2 md:grid-cols-3';
+            wrapper.innerHTML = options.map(option => `<button type="button" data-service-outcome-card="${option.value}" class="service-outcome-card rounded-xl border border-slate-200 bg-white p-3 text-left text-[11px] font-bold text-slate-700">${option.label}</button>`).join('');
+            select.parentElement.insertBefore(wrapper, select);
+            wrapper.addEventListener('click', event => {
+                const button = event.target.closest('[data-service-outcome-card]');
+                if (!button) return;
+                select.value = button.dataset.serviceOutcomeCard;
+                wrapper.querySelectorAll('.service-outcome-card').forEach(card => card.classList.remove('border-indigo-500', 'bg-indigo-50'));
+                button.classList.add('border-indigo-500', 'bg-indigo-50');
+                updateServiceFields();
+                wrapper.classList.add('hidden');
+                const expand = document.getElementById('service-outcome-expand');
+                expand.classList.remove('hidden');
+                expand.textContent = `Resultado: ${button.textContent} · alterar`;
+            });
+            const expand = document.createElement('button');
+            expand.type = 'button';
+            expand.id = 'service-outcome-expand';
+            expand.className = 'hidden mt-2 text-[10px] font-black uppercase tracking-wider text-indigo-500';
+            expand.textContent = 'Alterar resultado';
+            select.parentElement.appendChild(expand);
+            expand.addEventListener('click', () => { wrapper.classList.toggle('hidden'); });
+            select.value = '';
+            updateServiceFields();
+        }
 
         function openNewSaleModal() {
             editingSaleId = null;
@@ -929,10 +984,14 @@
         }
 
         function bindTaskActions() {
+            initServiceOutcomeCards();
             document.getElementById('nav-inicio').addEventListener('click', () => showPage('dashboard'));
             document.getElementById('nav-tasks').addEventListener('click', () => showPage('tasks'));
             document.getElementById('nav-sales').addEventListener('click', () => showPage('sales'));
             document.getElementById('nav-service').addEventListener('click', () => showPage('service'));
+            document.getElementById('dashboard-sales-title').addEventListener('click', () => showPage('sales'));
+            document.getElementById('dashboard-service-title').addEventListener('click', () => showPage('service'));
+            document.getElementById('open-service-from-dashboard').addEventListener('click', () => showPage('service'));
             const routineTitle = document.getElementById('routine-title');
             routineTitle.addEventListener('click', () => showPage('tasks'));
             routineTitle.addEventListener('keydown', event => {
@@ -1025,11 +1084,11 @@
             document.getElementById('service-date-carousel').addEventListener('click', event => { const button = event.target.closest('[data-service-date]'); if (button) { serviceSelectedDate = button.dataset.serviceDate; renderServices(); } });
             document.getElementById('service-form').addEventListener('submit', event => {
                 event.preventDefault();
-                const outcome = document.getElementById('service-outcome').value; const converted = outcome === 'converted'; const products = getSelectedSaleProducts('service-product-options'); const value = Number(document.getElementById('service-value').value); if (converted && (!value || value <= 0 || !products.length)) return window.alert('Para registrar uma venda, informe o valor e escolha ao menos um produto.');
+                const outcome = document.getElementById('service-outcome').value; const converted = outcome === 'converted'; const products = getSelectedSaleProducts('service-product-options'); const value = Number(document.getElementById('service-value').value); if (!outcome) return window.alert('Escolha o que aconteceu no atendimento.'); if (converted && (!value || value <= 0 || !products.length)) return window.alert('Para registrar uma venda, informe o valor e escolha ao menos um produto.');
                 const previousService = editingServiceId ? getServices().find(item => item.id === editingServiceId) : null; const existingSaleId = previousService?.saleId; const now = new Date(); const datetime = previousService?.datetime || now.toISOString(); const labels = { converted: 'Venda realizada', conditional: 'Levou condicional', authorized: 'Venda permitida / aguardando fechamento', 'no-product': 'Não tínhamos o produto', 'just-looking': 'Só estava olhando', expensive: 'Achou caro', 'no-decision': 'Não tomou decisão', competitor: 'Preferiu a concorrência', 'return-later': 'Vai voltar depois', other: 'Outro motivo' }; const service = { id: editingServiceId || `service-${Date.now()}`, client: document.getElementById('service-client').value.trim(), outcome, outcomeLabel: labels[outcome], value: converted ? value : 0, products: converted ? products : [], demand: document.getElementById('service-demand').value.trim(), notes: document.getElementById('service-notes').value.trim(), datetime, date: datetime.slice(0, 10), saleId: existingSaleId };
                 const services = getServices(); saveServices(editingServiceId ? services.map(item => item.id === editingServiceId ? service : item) : [...services, service]);
                 if (converted) { const sales = getSales(); const sale = { id: existingSaleId || `sale-${Date.now()}`, client: service.client, value, datetime, date: service.date, products }; saveSales(existingSaleId ? sales.map(item => item.id === existingSaleId ? sale : item) : [...sales, sale]); service.saleId = sale.id; saveServices(getServices().map(item => item.id === service.id ? service : item)); } else if (existingSaleId) saveSales(getSales().filter(item => item.id !== existingSaleId));
-                closeServiceModal(); renderServices(); renderSales();
+                closeServiceModal(); renderServices(); renderSales(); renderDashboardServices();
             });
             document.addEventListener('click', event => {
                 const toggleButton = event.target.closest('[data-toggle-task]');
@@ -1065,7 +1124,7 @@
                 if (editServiceButton) { const service = getServices().find(item => item.id === editServiceButton.dataset.editService); if (service) openServiceModal(service); }
 
                 const deleteServiceButton = event.target.closest('[data-delete-service]');
-                if (deleteServiceButton && window.confirm('Excluir este atendimento?')) { const service = getServices().find(item => item.id === deleteServiceButton.dataset.deleteService); saveServices(getServices().filter(item => item.id !== deleteServiceButton.dataset.deleteService)); if (service?.saleId) saveSales(getSales().filter(item => item.id !== service.saleId)); renderServices(); renderSales(); }
+                if (deleteServiceButton && window.confirm('Excluir este atendimento?')) { const service = getServices().find(item => item.id === deleteServiceButton.dataset.deleteService); saveServices(getServices().filter(item => item.id !== deleteServiceButton.dataset.deleteService)); if (service?.saleId) saveSales(getSales().filter(item => item.id !== service.saleId)); renderServices(); renderSales(); renderDashboardServices(); }
 
                 const editButton = event.target.closest('[data-edit-task]');
                 if (editButton) {
