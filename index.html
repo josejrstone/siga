@@ -43,6 +43,14 @@
                 <div class="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white text-[10px] font-bold">CS</div>
             </div>
         </div>
+        <nav id="desktop-navigation" class="hidden border-t border-slate-100 bg-white/80 md:block">
+            <div class="mx-auto flex max-w-5xl items-center gap-2 px-6 py-2">
+                <button type="button" data-desktop-page="dashboard" class="desktop-nav-button rounded-xl px-3 py-2 text-xs font-black text-indigo-600 transition hover:bg-indigo-50"><i data-lucide="layout-grid" class="mr-1 inline h-4 w-4"></i>Início</button>
+                <button type="button" data-desktop-page="service" class="desktop-nav-button rounded-xl px-3 py-2 text-xs font-black text-slate-500 transition hover:bg-indigo-50"><i data-lucide="users" class="mr-1 inline h-4 w-4"></i>Atendimentos</button>
+                <button type="button" data-desktop-page="sales" class="desktop-nav-button rounded-xl px-3 py-2 text-xs font-black text-slate-500 transition hover:bg-indigo-50"><i data-lucide="shopping-bag" class="mr-1 inline h-4 w-4"></i>Vendas</button>
+                <button type="button" data-desktop-page="tasks" class="desktop-nav-button rounded-xl px-3 py-2 text-xs font-black text-slate-500 transition hover:bg-indigo-50"><i data-lucide="check-square" class="mr-1 inline h-4 w-4"></i>Tarefas</button>
+            </div>
+        </nav>
     </header>
 
     <main id="dashboard-page" class="max-w-5xl mx-auto p-4 space-y-6">
@@ -248,7 +256,7 @@
     <section id="tasks-page" class="hidden max-w-5xl mx-auto p-4 space-y-6">
         <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
-                <h2 class="text-2xl font-black text-slate-800">Tarefas</h2>
+                <div class="flex items-center gap-3"><button type="button" data-back-dashboard aria-label="Voltar ao início" class="hidden h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 md:flex"><i data-lucide="arrow-left" class="h-4 w-4"></i></button><h2 class="text-2xl font-black text-slate-800">Tarefas</h2></div>
                 <p class="mt-1 text-xs font-medium text-slate-500">Ordenadas por urgência</p>
             </div>
             <div class="flex items-end gap-2">
@@ -268,7 +276,7 @@
     <!-- TELA DE VENDAS -->
     <section id="sales-page" class="hidden max-w-5xl mx-auto p-4 space-y-6">
         <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div><h2 class="text-2xl font-black text-slate-800">Minhas Vendas</h2><p id="sales-period-label" class="mt-1 text-xs font-medium text-slate-500">Resumo do dia</p></div>
+            <div><div class="flex items-center gap-3"><button type="button" data-back-dashboard aria-label="Voltar ao início" class="hidden h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 md:flex"><i data-lucide="arrow-left" class="h-4 w-4"></i></button><h2 class="text-2xl font-black text-slate-800">Minhas Vendas</h2></div><p id="sales-period-label" class="mt-1 text-xs font-medium text-slate-500">Resumo do dia</p></div>
             <div class="flex rounded-xl bg-slate-100 p-1">
                 <button type="button" data-sales-period="day" class="sales-period-button rounded-lg bg-white px-3 py-2 text-[10px] font-black text-indigo-600 shadow-sm">Dia</button>
                 <button type="button" data-sales-period="week" class="sales-period-button rounded-lg px-3 py-2 text-[10px] font-black text-slate-400">Semana</button>
@@ -299,9 +307,9 @@
 
     <!-- TELA DE ATENDIMENTOS -->
     <section id="service-page" class="hidden max-w-5xl mx-auto p-4 space-y-6">
-        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between"><div><h2 class="text-2xl font-black text-slate-800">Meus Atendimentos</h2><p id="service-period-label" class="mt-1 text-xs font-medium text-slate-500">Resumo do dia</p></div><div class="flex rounded-xl bg-slate-100 p-1"><button type="button" data-service-period="day" class="service-period-button rounded-lg bg-white px-3 py-2 text-[10px] font-black text-indigo-600 shadow-sm">Dia</button><button type="button" data-service-period="week" class="service-period-button px-3 py-2 text-[10px] font-black text-slate-400">Semana</button><button type="button" data-service-period="month" class="service-period-button px-3 py-2 text-[10px] font-black text-slate-400">Mês</button></div></div>
+        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between"><div><div class="flex items-center gap-3"><button type="button" data-back-dashboard aria-label="Voltar ao início" class="hidden h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 md:flex"><i data-lucide="arrow-left" class="h-4 w-4"></i></button><h2 class="text-2xl font-black text-slate-800">Meus Atendimentos</h2></div><p id="service-period-label" class="mt-1 text-xs font-medium text-slate-500">Resumo do dia</p></div><div class="flex rounded-xl bg-slate-100 p-1"><button type="button" data-service-period="day" class="service-period-button rounded-lg bg-white px-3 py-2 text-[10px] font-black text-indigo-600 shadow-sm">Dia</button><button type="button" data-service-period="week" class="service-period-button px-3 py-2 text-[10px] font-black text-slate-400">Semana</button><button type="button" data-service-period="month" class="service-period-button px-3 py-2 text-[10px] font-black text-slate-400">Mês</button></div></div>
         <div class="grid grid-cols-2 gap-3 md:grid-cols-6"><div class="rounded-2xl bg-indigo-600 p-4 text-white"><p class="text-[9px] font-black uppercase">Atendimentos</p><p id="service-total" class="mt-1 text-2xl font-black">0</p></div><div class="rounded-2xl bg-emerald-500 p-4 text-white"><p class="text-[9px] font-black uppercase">Conversões</p><p id="service-conversions" class="mt-1 text-2xl font-black">0</p></div><div class="rounded-2xl bg-amber-400 p-4 text-white"><p class="text-[9px] font-black uppercase">Conversão</p><p id="service-rate" class="mt-1 text-2xl font-black">0%</p></div><div class="rounded-2xl bg-sky-500 p-4 text-white"><p class="text-[9px] font-black uppercase">Condicionais</p><p id="service-conditional" class="mt-1 text-2xl font-black">0</p></div><div class="rounded-2xl bg-cyan-600 p-4 text-white"><p class="text-[9px] font-black uppercase">Permitidas</p><p id="service-authorized" class="mt-1 text-2xl font-black">0</p></div><div class="rounded-2xl bg-slate-800 p-4 text-white"><p class="text-[9px] font-black uppercase">Não convertidos</p><p id="service-no-sale" class="mt-1 text-2xl font-black">0</p></div></div>
-        <div class="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm"><div id="service-date-carousel" class="date-carousel flex snap-x snap-mandatory gap-2 overflow-x-auto pb-1"></div></div>
+        <div class="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm"><div id="service-date-carousel" class="date-carousel flex snap-x snap-mandatory gap-2 overflow-x-auto pb-1"></div><div id="service-week-range" class="mt-3 hidden grid gap-3 md:grid-cols-2"><label class="text-[10px] font-black uppercase tracking-wider text-slate-400">Início da semana<span class="mt-1 flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3"><input id="service-week-start" type="date" class="w-full border-0 px-0 py-2 text-sm font-bold text-slate-700 outline-none"><i data-lucide="calendar-days" class="h-4 w-4 text-indigo-500"></i></span></label><label class="text-[10px] font-black uppercase tracking-wider text-slate-400">Fim da semana<span class="mt-1 flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3"><input id="service-week-end" type="date" class="w-full border-0 px-0 py-2 text-sm font-bold text-slate-700 outline-none"><i data-lucide="calendar-days" class="h-4 w-4 text-indigo-500"></i></span></label></div></div>
         <section class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm"><h3 class="mb-3 text-sm font-black uppercase tracking-wider text-slate-800">Motivos e oportunidades</h3><div id="service-reasons-report" class="grid gap-2 md:grid-cols-2"></div></section>
         <div id="service-list" class="space-y-3"></div>
     </section>
@@ -568,6 +576,7 @@
             const navSales = document.getElementById('nav-sales');
             const navService = document.getElementById('nav-service');
             const indicator = document.getElementById('nav-indicator');
+            document.querySelectorAll('[data-desktop-page]').forEach(button => { const active = button.dataset.desktopPage === pageName; button.classList.toggle('bg-indigo-600', active); button.classList.toggle('text-white', active); button.classList.toggle('text-slate-500', !active); });
 
             if (pageName === 'dashboard') {
                 dashboard.classList.remove('hidden');
@@ -761,6 +770,8 @@
         const serviceStorageKey = 'siga-atendimentos';
         let servicePeriod = 'day';
         let serviceSelectedDate = getLocalDateKey();
+        let serviceWeekStart = serviceSelectedDate;
+        let serviceWeekEnd = serviceSelectedDate;
         let editingServiceId = null;
 
         function getServices() {
@@ -776,8 +787,7 @@
             const services = [...savedServices, ...standaloneSales];
             if (servicePeriod === 'month') return services.filter(item => item.date.slice(0, 7) === serviceSelectedDate.slice(0, 7));
             if (servicePeriod === 'week') {
-                const date = new Date(`${serviceSelectedDate}T12:00:00`); const day = date.getDay() || 7; const start = new Date(date); start.setDate(date.getDate() - day + 1); const end = new Date(start); end.setDate(start.getDate() + 6);
-                return services.filter(item => item.date >= getLocalDateKey(start) && item.date <= getLocalDateKey(end));
+                return services.filter(item => item.date >= serviceWeekStart && item.date <= serviceWeekEnd);
             }
             return services.filter(item => item.date === serviceSelectedDate);
         }
@@ -791,7 +801,10 @@
         function renderServices() {
             const services = servicesInPeriod().sort((first, second) => second.datetime.localeCompare(first.datetime)); const conversions = services.filter(item => item.outcome === 'converted').length; const conditional = services.filter(item => item.outcome === 'conditional').length; const authorized = services.filter(item => item.outcome === 'authorized').length; const noSale = services.length - conversions;
             document.getElementById('service-total').textContent = services.length; document.getElementById('service-conversions').textContent = conversions; document.getElementById('service-rate').textContent = services.length ? `${Math.round(conversions / services.length * 100)}%` : '0%'; document.getElementById('service-conditional').textContent = conditional; document.getElementById('service-authorized').textContent = authorized; document.getElementById('service-no-sale').textContent = noSale;
-            document.getElementById('service-period-label').textContent = servicePeriod === 'day' ? `Atendimentos de ${new Date(`${serviceSelectedDate}T12:00:00`).toLocaleDateString('pt-BR')}` : servicePeriod === 'week' ? 'Atendimentos da semana selecionada' : `Atendimentos de ${serviceSelectedDate.slice(0, 7)}`;
+            const serviceMonthLabel = new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' }).format(new Date(`${serviceSelectedDate.slice(0, 7)}-01T12:00:00`));
+            document.getElementById('service-period-label').textContent = servicePeriod === 'day' ? `Atendimentos de ${new Date(`${serviceSelectedDate}T12:00:00`).toLocaleDateString('pt-BR')}` : servicePeriod === 'week' ? `Atendimentos de ${new Date(`${serviceWeekStart}T12:00:00`).toLocaleDateString('pt-BR')} até ${new Date(`${serviceWeekEnd}T12:00:00`).toLocaleDateString('pt-BR')}` : `Atendimentos de ${serviceMonthLabel}`;
+            document.getElementById('service-week-start').value = serviceWeekStart;
+            document.getElementById('service-week-end').value = serviceWeekEnd;
             const reasons = {}; services.filter(item => item.outcome !== 'converted').forEach(item => { reasons[item.outcomeLabel] = (reasons[item.outcomeLabel] || 0) + 1; }); const reasonEntries = Object.entries(reasons).sort((first, second) => second[1] - first[1]);
             document.getElementById('service-reasons-report').innerHTML = reasonEntries.length ? reasonEntries.map(([reason, count]) => `<div class="flex justify-between rounded-xl bg-slate-50 px-3 py-2 text-xs font-bold text-slate-600"><span>${escapeHtml(reason)}</span><strong class="text-indigo-600">${count}</strong></div>`).join('') : '<p class="text-xs text-slate-400">Nenhum motivo registrado.</p>';
             document.getElementById('service-list').innerHTML = services.length ? services.map(item => `<article class="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm"><div class="flex items-start justify-between gap-3"><div><p class="text-sm font-bold text-slate-700">${escapeHtml(item.client || 'Cliente não informado')}</p><p class="mt-1 text-[10px] font-semibold text-slate-400">${new Date(item.datetime).toLocaleDateString('pt-BR')} às ${new Date(item.datetime).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</p></div><div class="flex items-center gap-2"><span class="rounded-full bg-indigo-50 px-2 py-1 text-[10px] font-black text-indigo-600">${escapeHtml(item.outcomeLabel)}</span><button type="button" data-edit-service="${item.id}" aria-label="Editar atendimento" class="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:text-indigo-600"><i data-lucide="pencil" class="h-4 w-4"></i></button><button type="button" data-delete-service="${item.id}" aria-label="Excluir atendimento" class="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:text-red-600"><i data-lucide="trash-2" class="h-4 w-4"></i></button></div></div>${item.notes ? `<p class="mt-3 text-xs text-slate-500">${escapeHtml(item.notes)}</p>` : ''}${item.demand ? `<p class="mt-2 text-[10px] font-semibold text-amber-600">Procurava: ${escapeHtml(item.demand)}</p>` : ''}</article>`).join('') : '<p class="rounded-2xl bg-white p-5 text-xs text-slate-400">Nenhum atendimento registrado neste período.</p>';
@@ -803,7 +816,7 @@
             document.getElementById('dashboard-service-summary').innerHTML = services.length ? services.map(item => `<div class="rounded-xl bg-slate-50 p-3"><div class="flex items-center justify-between gap-2"><span class="truncate text-xs font-bold text-slate-700">${escapeHtml(item.client || 'Cliente não informado')}</span><span class="text-[10px] font-black text-indigo-600">${escapeHtml(item.outcomeLabel)}</span></div><p class="mt-1 text-[10px] text-slate-400">${new Date(item.datetime).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}${item.notes ? ` · ${escapeHtml(item.notes)}` : ''}</p></div>`).join('') : '<p class="text-xs text-slate-400">Nenhum atendimento registrado hoje.</p>';
         }
 
-        function showServicePeriod(period) { servicePeriod = period; document.querySelectorAll('.service-period-button').forEach(button => { const active = button.dataset.servicePeriod === period; button.classList.toggle('bg-white', active); button.classList.toggle('text-indigo-600', active); }); renderServices(); }
+        function showServicePeriod(period) { servicePeriod = period; document.querySelectorAll('.service-period-button').forEach(button => { const active = button.dataset.servicePeriod === period; button.classList.toggle('bg-white', active); button.classList.toggle('text-indigo-600', active); }); document.getElementById('service-week-range').classList.toggle('hidden', period !== 'week'); renderServices(); }
 
         function openServiceModal(service = null) { editingServiceId = service?.id || null; document.getElementById('service-form').reset(); document.getElementById('service-outcome').value = service?.outcome || ''; document.getElementById('service-client').value = service?.client || ''; document.getElementById('service-value').value = service?.value || ''; document.getElementById('service-demand').value = service?.demand || ''; document.getElementById('service-notes').value = service?.notes || ''; const outcomeCards = document.getElementById('service-outcome-cards'); outcomeCards.classList.toggle('hidden', Boolean(service)); document.getElementById('service-outcome-expand').classList.toggle('hidden', !service); document.querySelectorAll('.service-outcome-card').forEach(card => { const selected = card.dataset.serviceOutcomeCard === service?.outcome; card.classList.toggle('border-indigo-500', selected); card.classList.toggle('bg-indigo-50', selected); }); renderProductOptionsInto('service-product-options', service?.products || []); updateServiceFields(); const modal = document.getElementById('service-modal'); modal.classList.remove('hidden'); modal.classList.add('flex'); }
         function closeServiceModal() { editingServiceId = null; const modal = document.getElementById('service-modal'); modal.classList.add('hidden'); modal.classList.remove('flex'); }
@@ -989,6 +1002,8 @@
             document.getElementById('nav-tasks').addEventListener('click', () => showPage('tasks'));
             document.getElementById('nav-sales').addEventListener('click', () => showPage('sales'));
             document.getElementById('nav-service').addEventListener('click', () => showPage('service'));
+            document.querySelectorAll('[data-desktop-page]').forEach(button => button.addEventListener('click', () => showPage(button.dataset.desktopPage)));
+            document.querySelectorAll('[data-back-dashboard]').forEach(button => button.addEventListener('click', () => showPage('dashboard')));
             document.getElementById('dashboard-sales-title').addEventListener('click', () => showPage('sales'));
             document.getElementById('dashboard-service-title').addEventListener('click', () => showPage('service'));
             document.getElementById('open-service-from-dashboard').addEventListener('click', () => showPage('service'));
@@ -1052,6 +1067,8 @@
             });
             document.getElementById('sales-week-start').addEventListener('change', event => { salesWeekStart = event.target.value; if (salesWeekStart > salesWeekEnd) salesWeekEnd = salesWeekStart; renderSales(); });
             document.getElementById('sales-week-end').addEventListener('change', event => { salesWeekEnd = event.target.value; if (salesWeekEnd < salesWeekStart) salesWeekStart = salesWeekEnd; renderSales(); });
+            document.getElementById('service-week-start').addEventListener('change', event => { serviceWeekStart = event.target.value; if (serviceWeekStart > serviceWeekEnd) serviceWeekEnd = serviceWeekStart; renderServices(); });
+            document.getElementById('service-week-end').addEventListener('change', event => { serviceWeekEnd = event.target.value; if (serviceWeekEnd < serviceWeekStart) serviceWeekStart = serviceWeekEnd; renderServices(); });
             document.getElementById('sales-month-selector').addEventListener('change', event => { salesSelectedMonth = event.target.value; renderSales(); });
             document.getElementById('sale-product-options').addEventListener('click', event => {
                 const card = event.target.closest('[data-sale-product]');
@@ -1121,10 +1138,10 @@
                 }
 
                 const editServiceButton = event.target.closest('[data-edit-service]');
-                if (editServiceButton) { const service = getServices().find(item => item.id === editServiceButton.dataset.editService); if (service) openServiceModal(service); }
+                if (editServiceButton) { const service = servicesInPeriod().find(item => item.id === editServiceButton.dataset.editService); if (service?.id.startsWith('sale-service-')) { const sale = getSales().find(item => item.id === service.saleId); if (sale) openEditSaleModal(sale); } else if (service) openServiceModal(service); }
 
                 const deleteServiceButton = event.target.closest('[data-delete-service]');
-                if (deleteServiceButton && window.confirm('Excluir este atendimento?')) { const service = getServices().find(item => item.id === deleteServiceButton.dataset.deleteService); saveServices(getServices().filter(item => item.id !== deleteServiceButton.dataset.deleteService)); if (service?.saleId) saveSales(getSales().filter(item => item.id !== service.saleId)); renderServices(); renderSales(); renderDashboardServices(); }
+                if (deleteServiceButton && window.confirm('Excluir este atendimento?')) { const service = servicesInPeriod().find(item => item.id === deleteServiceButton.dataset.deleteService); saveServices(getServices().filter(item => item.id !== deleteServiceButton.dataset.deleteService)); if (service?.saleId) saveSales(getSales().filter(item => item.id !== service.saleId)); renderServices(); renderSales(); renderDashboardServices(); }
 
                 const editButton = event.target.closest('[data-edit-task]');
                 if (editButton) {
