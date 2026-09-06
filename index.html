@@ -450,6 +450,9 @@
                 navTasks.classList.remove('text-slate-300');
                 navTasks.classList.add('text-indigo-600');
                 indicator.style.left = '60%';
+                const dateSelector = document.getElementById('task-date-selector');
+                dateSelector.valueAsDate = new Date();
+                currentSelectedDate = getLocalDateKey();
                 renderTasksByDate(currentSelectedDate);
             }
         }
@@ -575,7 +578,6 @@
                 currentSelectedDate = event.target.value;
                 renderTasksByDate(currentSelectedDate);
             });
-            document.getElementById('task-date-selector').valueAsDate = new Date();
             document.addEventListener('click', event => {
                 const toggleButton = event.target.closest('[data-toggle-task]');
                 if (toggleButton) {
