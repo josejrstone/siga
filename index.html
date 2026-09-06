@@ -159,12 +159,33 @@
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col justify-center text-center">
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Como está seu Humor?</p>
-                <div class="flex justify-between">
-                    <button class="text-2xl hover:scale-125 transition-transform grayscale hover:grayscale-0">😔</button>
-                    <button class="text-2xl scale-125 transition-transform">😊</button>
-                    <button class="text-2xl hover:scale-125 transition-transform grayscale hover:grayscale-0">🔥</button>
+            <div id="mood-card" class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm transition-all">
+                <div class="flex items-start justify-between gap-3 mb-4">
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                        <i data-lucide="smile" class="w-4 h-4 text-orange-400"></i>
+                        Registro de Humor
+                    </p>
+                    <button id="toggle-mood-history" type="button" aria-expanded="false" aria-controls="mood-history" aria-label="Mostrar histórico de humor" class="w-8 h-8 shrink-0 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-indigo-100 hover:text-indigo-600 transition-colors">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                <p id="mood-selected-label" class="text-xs text-slate-500 mb-3">Como você está hoje?</p>
+                <div id="mood-options" class="grid grid-cols-6 gap-1.5" role="group" aria-label="Escolha seu humor de hoje"></div>
+                <button id="confirm-mood" type="button" class="mt-4 w-full rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm shadow-indigo-200 hover:bg-indigo-700 transition-colors">Confirmar humor</button>
+                <p id="mood-feedback" class="mt-2 text-center text-[10px] font-semibold text-emerald-600 min-h-4" aria-live="polite"></p>
+
+                <div id="mood-history" class="hidden mt-5 border-t border-slate-100 pt-5" aria-hidden="true">
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-800">Últimos 30 dias</h4>
+                            <p class="text-[10px] text-slate-400">Clique apenas em hoje para alterar</p>
+                        </div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Calendário</span>
+                    </div>
+                    <div class="grid grid-cols-7 gap-1 text-center text-[9px] font-bold uppercase text-slate-400 mb-1">
+                        <span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span>
+                    </div>
+                    <div id="mood-calendar" class="grid grid-cols-7 gap-1"></div>
                 </div>
             </div>
         </div>
@@ -223,6 +244,130 @@
 
     <script>
         lucide.createIcons();
+
+        const moodOptions = [
+            { id: 'muito-mal', emoji: '😔', label: 'Muito mal' },
+            { id: 'mal', emoji: '😟', label: 'Mal' },
+            { id: 'normal', emoji: '😐', label: 'Normal' },
+            { id: 'bem', emoji: '😊', label: 'Bem' },
+            { id: 'excelente', emoji: '🤩', label: 'Excelente' },
+            { id: 'energizado', emoji: '🔥', label: 'Energizado' }
+        ];
+        const moodStorageKey = 'siga-humor-registros';
+        let selectedMoodId = 'normal';
+
+        function getLocalDateKey(date = new Date()) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function getMoodRecords() {
+            try {
+                return JSON.parse(localStorage.getItem(moodStorageKey)) || {};
+            } catch (error) {
+                return {};
+            }
+        }
+
+        function saveMoodRecord(dateKey, moodId) {
+            const records = getMoodRecords();
+            records[dateKey] = moodId;
+            localStorage.setItem(moodStorageKey, JSON.stringify(records));
+        }
+
+        function getMood(moodId) {
+            return moodOptions.find(mood => mood.id === moodId) || moodOptions.find(mood => mood.id === 'normal');
+        }
+
+        function renderMoodOptions() {
+            const optionsContainer = document.getElementById('mood-options');
+            optionsContainer.innerHTML = moodOptions.map(mood => `
+                <button type="button" data-mood-id="${mood.id}" aria-label="${mood.label}" aria-pressed="${mood.id === selectedMoodId}"
+                    class="mood-option min-w-0 rounded-xl border px-1 py-2 text-center transition-all hover:-translate-y-0.5 ${mood.id === selectedMoodId ? 'border-indigo-200 bg-indigo-50 shadow-sm' : 'border-transparent bg-slate-50'}">
+                    <span class="block text-xl leading-6">${mood.emoji}</span>
+                    <span class="mt-1 block truncate text-[9px] font-bold text-slate-500">${mood.label}</span>
+                </button>
+            `).join('');
+
+            optionsContainer.querySelectorAll('.mood-option').forEach(button => {
+                button.addEventListener('click', () => {
+                    selectedMoodId = button.dataset.moodId;
+                    renderMoodOptions();
+                    updateMoodLabel();
+                });
+            });
+        }
+
+        function updateMoodLabel() {
+            const mood = getMood(selectedMoodId);
+            document.getElementById('mood-selected-label').textContent = `Humor de hoje: ${mood.emoji} ${mood.label}`;
+        }
+
+        function renderMoodCalendar() {
+            const calendar = document.getElementById('mood-calendar');
+            const records = getMoodRecords();
+            const today = new Date();
+            const todayKey = getLocalDateKey(today);
+            const firstDay = new Date(today);
+            firstDay.setDate(today.getDate() - 29);
+            const leadingDays = firstDay.getDay();
+            const days = [];
+
+            for (let index = 0; index < leadingDays; index += 1) days.push('<span aria-hidden="true"></span>');
+            for (let index = 0; index < 30; index += 1) {
+                const date = new Date(firstDay);
+                date.setDate(firstDay.getDate() + index);
+                const dateKey = getLocalDateKey(date);
+                const isToday = dateKey === todayKey;
+                const mood = getMood(isToday ? selectedMoodId : (records[dateKey] || 'normal'));
+                const todayClasses = isToday ? 'border-indigo-300 bg-indigo-50 ring-1 ring-indigo-100' : 'border-slate-100 bg-slate-50';
+                days.push(`
+                    <button type="button" data-date="${dateKey}" ${isToday ? '' : 'disabled'} aria-label="${date.toLocaleDateString('pt-BR')}: ${mood.label}${isToday ? ', hoje' : ''}"
+                        class="rounded-lg border ${todayClasses} p-1 text-center ${isToday ? 'cursor-pointer hover:border-indigo-400' : 'cursor-default opacity-80'}">
+                        <span class="block text-[9px] font-bold text-slate-400">${date.getDate()}</span>
+                        <span class="block text-base leading-5">${mood.emoji}</span>
+                    </button>
+                `);
+            }
+
+            calendar.innerHTML = days.join('');
+            const todayButton = calendar.querySelector(`[data-date="${todayKey}"]`);
+            if (todayButton) todayButton.addEventListener('click', () => {
+                selectedMoodId = records[todayKey] || 'normal';
+                renderMoodOptions();
+                updateMoodLabel();
+            });
+        }
+
+        function initMoodCard() {
+            const todayKey = getLocalDateKey();
+            const records = getMoodRecords();
+            selectedMoodId = records[todayKey] || 'normal';
+            renderMoodOptions();
+            updateMoodLabel();
+            renderMoodCalendar();
+
+            document.getElementById('confirm-mood').addEventListener('click', () => {
+                saveMoodRecord(todayKey, selectedMoodId || 'normal');
+                const mood = getMood(selectedMoodId);
+                document.getElementById('mood-feedback').textContent = `Humor ${mood.label.toLowerCase()} salvo hoje.`;
+                renderMoodCalendar();
+            });
+
+            document.getElementById('toggle-mood-history').addEventListener('click', event => {
+                const history = document.getElementById('mood-history');
+                const expanded = history.classList.toggle('hidden') === false;
+                history.setAttribute('aria-hidden', String(!expanded));
+                event.currentTarget.setAttribute('aria-expanded', String(expanded));
+                event.currentTarget.setAttribute('aria-label', expanded ? 'Ocultar histórico de humor' : 'Mostrar histórico de humor');
+                event.currentTarget.innerHTML = `<i data-lucide="${expanded ? 'minus' : 'plus'}" class="w-4 h-4"></i>`;
+                lucide.createIcons();
+            });
+        }
+
+        initMoodCard();
 
         const data = {
             dia: { title: "Meta Diária", date: "06 Setembro", valor: "R$ 2.450", meta: "R$ 3.500", falta: "R$ 1.050", progress: 70, badge: "Bronze", color: "tier-bronze" },
