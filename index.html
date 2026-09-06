@@ -323,9 +323,12 @@
         function getTasks() {
             try {
                 const savedTasks = JSON.parse(localStorage.getItem(taskStorageKey));
-                return Array.isArray(savedTasks) && savedTasks.length ? savedTasks : defaultTasks;
+                if (Array.isArray(savedTasks) && savedTasks.length) return savedTasks;
+                const today = new Date().toISOString().split('T')[0];
+                return defaultTasks.map(task => ({ ...task, date: task.date || today }));
             } catch (error) {
-                return defaultTasks;
+                const today = new Date().toISOString().split('T')[0];
+                return defaultTasks.map(task => ({ ...task, date: task.date || today }));
             }
         }
 
@@ -612,19 +615,6 @@
             renderTasks();
             bindTaskActions();
             initObservationEditor();
-            document.getElementById('add-task-button').addEventListener('click', () => {
-                document.getElementById('task-form').classList.toggle('hidden');
-                document.getElementById('task-title-input').focus();
-            });
-            document.getElementById('task-form').addEventListener('submit', event => {
-                event.preventDefault();
-                const titleInput = document.getElementById('task-title-input');
-                const timeInput = document.getElementById('task-time-input');
-                const tasks = getTasks();
-                tasks.push({ id: `user-${Date.now()}`, title: titleInput.value.trim(), time: timeInput.value, owner: 'user', completed: false, observation: '' });
-                saveTasks(tasks);
-                event.target.reset();
-                event.target.classList.add('hidden');
                 renderTasks();
             });
             initTaskNotifications();
