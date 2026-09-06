@@ -3,219 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIGA - Gestão de Indicadores</title>
+    <title>SIGA - Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .tier-gradient-bronze { background: linear-gradient(135deg, #cd7f32, #a0522d); }
-        .tier-gradient-silver { background: linear-gradient(135deg, #94a3b8, #475569); }
-        .tier-gradient-gold { background: linear-gradient(135deg, #fbbf24, #d97706); }
-        .tier-gradient-diamond { background: linear-gradient(135deg, #22d3ee, #0891b2); }
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .tier-bronze { background: linear-gradient(135deg, #cd7f32, #a0522d); }
+        .tier-silver { background: linear-gradient(135deg, #94a3b8, #475569); }
+        .tier-gold { background: linear-gradient(135deg, #fbbf24, #d97706); }
+        .tier-diamond { background: linear-gradient(135deg, #22d3ee, #0891b2); }
+        .progress-glow { box-shadow: 0 0 20px rgba(99, 102, 241, 0.2); }
     </style>
 </head>
-<body class="bg-white text-slate-900 min-h-screen pb-28">
+<body class="bg-[#FBFDFF] text-slate-900 min-h-screen pb-28">
 
     <!-- HEADER -->
-    <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
+    <header class="sticky top-0 z-50 bg-white/70 backdrop-blur-xl border-b border-slate-100">
         <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
             <div class="flex items-center gap-2">
-                <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white">
-                    <i data-lucide="layers" class="w-5 h-5"></i>
+                <div class="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-100">
+                    <i data-lucide="zap" class="w-5 h-5 fill-white"></i>
                 </div>
-                <span class="text-xl font-extrabold tracking-tighter text-indigo-600">SIGA</span>
+                <span class="text-xl font-black tracking-tighter text-slate-800">SIGA</span>
             </div>
-            <div class="flex items-center gap-3">
-                <i data-lucide="bell" class="w-5 h-5 text-slate-400"></i>
-                <div class="w-10 h-10 rounded-full border-2 border-indigo-100 p-0.5">
-                    <img src="https://ui-avatars.com/api/?name=Carlos+Silva&background=6366f1&color=fff" class="rounded-full shadow-sm" alt="Avatar">
-                </div>
+            <div class="flex items-center gap-3 bg-slate-100 p-1 rounded-full">
+                <div class="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white text-[10px] font-bold">CS</div>
             </div>
         </div>
     </header>
 
     <main class="max-w-5xl mx-auto p-4 space-y-6">
         
-        <!-- FRASE DO DIA (LIMPA) -->
-        <section class="bg-slate-900 rounded-[2rem] p-8 text-center relative overflow-hidden">
-            <div class="relative z-10">
-                <i data-lucide="quote" class="w-8 h-8 text-indigo-500 mx-auto mb-4 opacity-50"></i>
-                <p class="text-xl font-medium text-slate-200 leading-relaxed italic">
-                    "O sucesso é a soma de pequenos esforços repetidos dia após dia."
-                </p>
-                <p class="text-indigo-400 text-sm font-bold mt-4 uppercase tracking-widest">— Robert Collier</p>
-            </div>
-            <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-indigo-600/20 rounded-full blur-3xl"></div>
+        <!-- FRASE DO DIA -->
+        <section class="py-4 text-center">
+            <p class="text-lg md:text-xl font-semibold text-slate-700 italic leading-relaxed">
+                "Grandes batalhas só são dadas a grandes guerreiros."
+            </p>
+            <p class="text-[10px] font-black text-indigo-500 uppercase tracking-[0.3em] mt-2">— Autor Desconhecido</p>
         </section>
 
         <!-- SELETOR DE PERÍODO -->
-        <div class="flex justify-center p-1 bg-slate-100 rounded-2xl max-w-sm mx-auto">
+        <div class="flex justify-center p-1.5 bg-slate-100 rounded-2xl max-w-sm mx-auto shadow-inner">
             <button onclick="switchPeriod('dia')" id="btn-dia" class="flex-1 py-2 text-xs font-bold rounded-xl transition-all">DIA</button>
             <button onclick="switchPeriod('semana')" id="btn-semana" class="flex-1 py-2 text-xs font-bold rounded-xl transition-all bg-white shadow-sm text-indigo-600">SEMANA</button>
             <button onclick="switchPeriod('mes')" id="btn-mes" class="flex-1 py-2 text-xs font-bold rounded-xl transition-all">MÊS</button>
         </div>
 
-        <!-- CARD PRINCIPAL DE PERFORMANCE -->
-        <section class="bg-white rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/50 border border-slate-50 relative overflow-hidden">
-            <div class="flex justify-between items-start mb-6">
+        <!-- PERFORMANCE CARD -->
+        <section class="bg-white rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/40 border border-slate-50">
+            <div class="flex justify-between items-start mb-8">
                 <div>
                     <div class="flex items-center gap-2 mb-1">
-                        <h2 id="period-title" class="text-2xl font-black text-slate-800 tracking-tight">Meta Semanal</h2>
-                        <span id="badge-nivel" class="tier-gradient-silver text-[10px] text-white font-black px-2 py-0.5 rounded-full uppercase tracking-tighter">Prata</span>
+                        <h2 id="period-title" class="text-2xl font-black text-slate-800">Meta Semanal</h2>
+                        <span id="badge-nivel" class="tier-silver text-[10px] text-white font-black px-3 py-1 rounded-full uppercase">Prata</span>
                     </div>
-                    <p id="period-date" class="text-xs text-slate-400 font-bold uppercase tracking-widest italic">04 Set - 10 Set</p>
+                    <p id="period-date" class="text-[10px] text-slate-400 font-bold uppercase tracking-widest italic">04 Set - 10 Set</p>
                 </div>
                 <div class="text-right">
-                    <p class="text-[10px] font-black text-slate-400 uppercase">Realizado</p>
-                    <p id="total-vendas" class="text-2xl font-black text-indigo-600 tracking-tighter">R$ 12.450</p>
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-tighter">Realizado</p>
+                    <p id="total-vendas" class="text-3xl font-black text-indigo-600 tabular-nums">R$ 12.450</p>
                 </div>
             </div>
 
-            <!-- BARRA DE PROGRESSO COM MARCADORES DE NÍVEL -->
-            <div class="relative pt-6 pb-10">
-                <div class="w-full h-5 bg-slate-100 rounded-full shadow-inner overflow-hidden">
-                    <div id="progress-fill" class="h-full bg-gradient-to-r from-orange-400 via-indigo-500 to-cyan-400 transition-all duration-700" style="width: 55%"></div>
+            <!-- BARRA DE PROGRESSO COM NÍVEIS -->
+            <div class="relative mb-12">
+                <div class="w-full h-4 bg-slate-100 rounded-full overflow-hidden shadow-inner">
+                    <div id="progress-fill" class="h-full bg-gradient-to-r from-indigo-500 to-cyan-400 transition-all duration-1000 progress-glow" style="width: 62%"></div>
                 </div>
-                
-                <!-- Marcadores de Classificação -->
-                <div class="absolute top-12 w-full flex justify-between px-1 text-[9px] font-black text-slate-400 uppercase tracking-tighter">
-                    <div class="flex flex-col items-center">
-                        <div class="w-1 h-2 bg-slate-200 mb-1"></div>
-                        <span>Bronze</span>
+                <div class="absolute top-6 w-full flex justify-between px-1">
+                    <div class="flex flex-col items-center gap-1">
+                        <div class="w-0.5 h-2 bg-slate-200"></div>
+                        <span class="text-[9px] font-bold text-slate-400 uppercase">Bronze</span>
                     </div>
-                    <div class="flex flex-col items-center">
-                        <div class="w-1 h-2 bg-slate-200 mb-1"></div>
-                        <span class="text-slate-600">Prata</span>
+                    <div class="flex flex-col items-center gap-1">
+                        <div class="w-0.5 h-2 bg-slate-200"></div>
+                        <span class="text-[9px] font-bold text-slate-600 uppercase">Prata</span>
                     </div>
-                    <div class="flex flex-col items-center">
-                        <div class="w-1 h-2 bg-slate-200 mb-1"></div>
-                        <span>Ouro</span>
+                    <div class="flex flex-col items-center gap-1">
+                        <div class="w-0.5 h-2 bg-slate-200"></div>
+                        <span class="text-[9px] font-bold text-slate-400 uppercase">Ouro</span>
                     </div>
-                    <div class="flex flex-col items-center">
-                        <div class="w-1 h-2 bg-slate-200 mb-1"></div>
-                        <span>Diamante</span>
+                    <div class="flex flex-col items-center gap-1">
+                        <div class="w-0.5 h-2 bg-slate-200"></div>
+                        <span class="text-[9px] font-bold text-slate-400 uppercase">Diamante</span>
                     </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-4 mt-4 pt-6 border-t border-slate-50">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600">
-                        <i data-lucide="target" class="w-5 h-5"></i>
-                    </div>
-                    <div>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase">Meta Alvo</p>
-                        <p id="meta-valor" class="text-sm font-bold tracking-tight text-slate-700">R$ 20.000,00</p>
-                    </div>
+            <div class="grid grid-cols-3 gap-2 pt-6 border-t border-slate-50">
+                <div>
+                    <p class="text-[9px] font-black text-slate-400 uppercase">Meta Alvo</p>
+                    <p id="meta-valor" class="text-sm font-bold text-slate-700">R$ 20.000</p>
                 </div>
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-600">
-                        <i data-lucide="trending-up" class="w-5 h-5"></i>
-                    </div>
-                    <div>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase">Ticket Médio</p>
-                        <p class="text-sm font-bold tracking-tight text-slate-700">R$ 458,00</p>
-                    </div>
+                <div class="text-center border-x border-slate-100 px-2">
+                    <p class="text-[9px] font-black text-slate-400 uppercase">Ticket Médio</p>
+                    <p class="text-sm font-bold text-emerald-500 flex items-center justify-center gap-1">
+                        R$ 458 <i data-lucide="arrow-up" class="w-3 h-3"></i>
+                    </p>
+                </div>
+                <div class="text-right">
+                    <p class="text-[9px] font-black text-slate-400 uppercase">Faltam</p>
+                    <p id="falta-valor" class="text-sm font-bold text-orange-500 italic">R$ 7.550</p>
                 </div>
             </div>
         </section>
 
-        <!-- VENDAS DO DIA & HUMOR -->
+        <!-- ROTINA E DICA RÁPIDA -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Rotina -->
             <section class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="font-bold text-slate-800 flex items-center gap-2">
-                        <i data-lucide="shopping-bag" class="w-5 h-5 text-indigo-600"></i> Vendas Diárias
-                    </h3>
-                    <input type="date" value="2024-09-06" class="text-xs font-bold text-slate-500 bg-slate-50 p-1 rounded-lg border-none focus:ring-0">
-                </div>
+                <h3 class="text-sm font-black text-slate-800 uppercase tracking-widest mb-4 flex items-center gap-2">
+                    <i data-lucide="list-checks" class="w-4 h-4 text-indigo-500"></i> Minha Rotina
+                </h3>
                 <div class="space-y-3">
-                    <div class="flex justify-between items-center p-3 hover:bg-slate-50 rounded-2xl transition-colors">
-                        <span class="text-xs font-semibold text-slate-600">14:32 - Venda #992</span>
-                        <span class="text-sm font-black text-slate-800 italic">R$ 1.200</span>
+                    <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl group cursor-pointer">
+                        <div class="w-5 h-5 border-2 border-indigo-200 rounded-lg group-hover:bg-indigo-500 transition-colors"></div>
+                        <span class="text-xs font-semibold text-slate-600 italic">Retornar Orçamentos (3)</span>
                     </div>
-                    <div class="flex justify-between items-center p-3 hover:bg-slate-50 rounded-2xl transition-colors">
-                        <span class="text-xs font-semibold text-slate-600">11:15 - Venda #985</span>
-                        <span class="text-sm font-black text-slate-800 italic">R$ 450</span>
+                    <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl group cursor-pointer">
+                        <div class="w-5 h-5 border-2 border-indigo-200 rounded-lg group-hover:bg-indigo-500 transition-colors"></div>
+                        <span class="text-xs font-semibold text-slate-600 italic">Follow-up Clientes Prata</span>
                     </div>
                 </div>
             </section>
 
-            <section class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
-                <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                    <i data-lucide="smile" class="w-4 h-4 text-orange-400"></i> Registro de Humor
+            <!-- Dica de Venda -->
+            <section class="bg-indigo-600 p-6 rounded-[2rem] text-white relative overflow-hidden shadow-lg shadow-indigo-100">
+                <i data-lucide="lightbulb" class="absolute -right-2 -bottom-2 w-20 h-20 opacity-20 rotate-12"></i>
+                <h3 class="text-[10px] font-black uppercase tracking-[0.2em] mb-2 opacity-80">Dica de Venda (Microlearning)</h3>
+                <p class="text-sm font-semibold leading-relaxed">
+                    "Técnica da Escassez: Informe ao cliente que as condições de bônus são exclusivas para atendimentos de hoje."
                 </p>
-                <div class="flex justify-between px-2">
-                    <button class="text-2xl hover:scale-125 transition-transform grayscale hover:grayscale-0">😔</button>
-                    <button class="text-2xl hover:scale-125 transition-transform grayscale hover:grayscale-0">😐</button>
-                    <button class="text-2xl scale-125 bg-indigo-50 p-2 rounded-xl border border-indigo-100">😊</button>
-                    <button class="text-2xl hover:scale-125 transition-transform grayscale hover:grayscale-0">🤩</button>
-                    <button class="text-2xl hover:scale-125 transition-transform grayscale hover:grayscale-0">🔥</button>
-                </div>
             </section>
         </div>
 
-        <!-- RANKING SEMANAL (SIMPLIFICADO) -->
-        <section class="bg-indigo-50/50 p-8 rounded-[2.5rem] border border-indigo-100/50">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="font-black text-indigo-900 flex items-center gap-2 uppercase tracking-tighter italic">
-                    <i data-lucide="award" class="w-6 h-6"></i> Ranking de Performance
-                </h3>
-                <span class="text-[10px] font-black text-indigo-500 uppercase tracking-widest">Atualizado 5m atrás</span>
-            </div>
-            
-            <div class="flex justify-center items-end gap-2 mb-8">
-                <!-- 2º Lugar -->
-                <div class="flex flex-col items-center">
-                    <div class="w-12 h-12 rounded-full border-4 border-slate-300 bg-white mb-2 overflow-hidden shadow-lg scale-90">
-                        <img src="https://ui-avatars.com/api/?name=Ana+M" alt="2nd">
-                    </div>
-                    <div class="h-16 w-14 bg-slate-300 rounded-t-xl flex items-center justify-center font-black text-white text-xl">2</div>
+        <!-- LISTA DE VENDAS E HUMOR -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="md:col-span-2 bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-sm font-black text-slate-800 uppercase tracking-widest flex items-center gap-2">
+                        <i data-lucide="shopping-cart" class="w-4 h-4 text-indigo-600"></i> Vendas Hoje
+                    </h3>
+                    <input type="date" value="2024-09-06" class="text-[10px] font-bold text-slate-400 bg-slate-50 border-none rounded-lg p-1">
                 </div>
-                <!-- 1º Lugar -->
-                <div class="flex flex-col items-center">
-                    <div class="w-16 h-16 rounded-full border-4 border-yellow-400 bg-white mb-2 overflow-hidden shadow-xl ring-4 ring-yellow-400/20">
-                        <img src="https://ui-avatars.com/api/?name=Pedro+L" alt="1st">
+                <div class="divide-y divide-slate-50">
+                    <div class="py-3 flex justify-between items-center">
+                        <span class="text-xs font-medium text-slate-500 italic">14:05 - Atendimento #102</span>
+                        <span class="text-sm font-black text-slate-800">R$ 890,00</span>
                     </div>
-                    <div class="h-24 w-16 bg-yellow-400 rounded-t-xl flex items-center justify-center font-black text-white text-3xl">1</div>
-                </div>
-                <!-- 3º Lugar (VOCÊ) -->
-                <div class="flex flex-col items-center">
-                    <div class="w-12 h-12 rounded-full border-4 border-indigo-600 bg-white mb-2 overflow-hidden shadow-lg scale-90">
-                        <img src="https://ui-avatars.com/api/?name=Carlos+Silva" alt="Me">
+                    <div class="py-3 flex justify-between items-center">
+                        <span class="text-xs font-medium text-slate-500 italic">10:30 - Atendimento #098</span>
+                        <span class="text-sm font-black text-slate-800">R$ 1.560,00</span>
                     </div>
-                    <div class="h-12 w-14 bg-indigo-600 rounded-t-xl flex items-center justify-center font-black text-white text-xl uppercase">3</div>
                 </div>
             </div>
-            <p class="text-center text-xs font-bold text-indigo-400 uppercase tracking-widest">Você subiu 2 posições esta semana!</p>
+
+            <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col justify-center text-center">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Como está seu Humor?</p>
+                <div class="flex justify-between">
+                    <button class="text-2xl hover:scale-125 transition-transform grayscale hover:grayscale-0">😔</button>
+                    <button class="text-2xl scale-125 transition-transform">😊</button>
+                    <button class="text-2xl hover:scale-125 transition-transform grayscale hover:grayscale-0">🔥</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- RANKING SIMPLIFICADO -->
+        <section class="bg-slate-50 p-8 rounded-[3rem] border border-slate-100">
+            <h3 class="text-center text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-8">Ranking Semanal</h3>
+            <div class="flex justify-center items-end gap-3 max-w-xs mx-auto">
+                <!-- 2º -->
+                <div class="flex flex-col items-center flex-1">
+                    <img src="https://ui-avatars.com/api/?name=Ana+M&background=e2e8f0" class="w-10 h-10 rounded-full border-2 border-white mb-2 shadow-sm">
+                    <div class="w-full h-16 bg-slate-200 rounded-t-2xl flex items-center justify-center font-black text-white text-xl">2</div>
+                </div>
+                <!-- 1º -->
+                <div class="flex flex-col items-center flex-1">
+                    <div class="relative">
+                        <i data-lucide="crown" class="w-5 h-5 text-yellow-500 absolute -top-4 left-1/2 -translate-x-1/2"></i>
+                        <img src="https://ui-avatars.com/api/?name=Pedro+L&background=fef3c7" class="w-14 h-14 rounded-full border-4 border-yellow-400 mb-2 shadow-md">
+                    </div>
+                    <div class="w-full h-24 bg-yellow-400 rounded-t-2xl flex items-center justify-center font-black text-white text-3xl">1</div>
+                </div>
+                <!-- 3º (VOCÊ) -->
+                <div class="flex flex-col items-center flex-1">
+                    <img src="https://ui-avatars.com/api/?name=Carlos+S&background=6366f1&color=fff" class="w-10 h-10 rounded-full border-2 border-indigo-400 mb-2 shadow-sm">
+                    <div class="w-full h-12 bg-indigo-600 rounded-t-2xl flex items-center justify-center font-black text-white text-xl uppercase">3</div>
+                </div>
+            </div>
         </section>
 
     </main>
 
     <!-- FAB -->
-    <button class="fixed bottom-24 right-6 md:bottom-10 md:right-10 w-16 h-16 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-2xl shadow-indigo-400/50 hover:scale-110 active:scale-95 transition-all z-50">
-        <i data-lucide="plus" class="w-8 h-8 text-white"></i>
+    <button class="fixed bottom-24 right-6 md:bottom-10 md:right-10 w-16 h-16 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-2xl shadow-indigo-300 hover:scale-110 active:scale-95 transition-all z-50">
+        <i data-lucide="plus" class="w-8 h-8"></i>
     </button>
 
     <!-- NAV MOBILE -->
-    <nav class="md:hidden fixed bottom-0 left-0 right-0 h-20 bg-white/90 backdrop-blur-xl border-t border-slate-100 flex items-center justify-around px-4 z-40">
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 h-20 bg-white/80 backdrop-blur-xl border-t border-slate-100 flex items-center justify-around px-4 z-40">
         <div class="flex flex-col items-center gap-1 text-indigo-600">
-            <i data-lucide="home" class="w-6 h-6"></i>
-            <span class="text-[10px] font-bold uppercase tracking-widest">Início</span>
+            <i data-lucide="layout-grid" class="w-6 h-6"></i>
+            <span class="text-[9px] font-black uppercase tracking-widest">Início</span>
         </div>
         <div class="flex flex-col items-center gap-1 text-slate-300">
-            <i data-lucide="calendar" class="w-6 h-6"></i>
-            <span class="text-[10px] font-bold uppercase tracking-widest">Agenda</span>
+            <i data-lucide="phone-forwarded" class="w-6 h-6"></i>
+            <span class="text-[9px] font-black uppercase tracking-widest">CRM</span>
         </div>
         <div class="flex flex-col items-center gap-1 text-slate-300">
-            <i data-lucide="bar-chart-2" class="w-6 h-6"></i>
-            <span class="text-[10px] font-bold uppercase tracking-widest">Metas</span>
+            <i data-lucide="shopping-bag" class="w-6 h-6"></i>
+            <span class="text-[9px] font-black uppercase tracking-widest">Vendas</span>
         </div>
         <div class="flex flex-col items-center gap-1 text-slate-300">
-            <i data-lucide="user" class="w-6 h-6"></i>
-            <span class="text-[10px] font-bold uppercase tracking-widest">Conta</span>
+            <i data-lucide="settings" class="w-6 h-6"></i>
+            <span class="text-[9px] font-black uppercase tracking-widest">Menu</span>
         </div>
     </nav>
 
@@ -223,29 +225,27 @@
         lucide.createIcons();
 
         const data = {
-            dia: { title: "Meta Diária", date: "06 Setembro", valor: "R$ 2.450", meta: "R$ 3.500", progress: 70, badge: "Bronze", color: "tier-gradient-bronze" },
-            semana: { title: "Meta Semanal", date: "04 Set - 10 Set", valor: "R$ 12.450", meta: "R$ 20.000", progress: 62, badge: "Prata", color: "tier-gradient-silver" },
-            mes: { title: "Meta Mensal", date: "01 Set - 30 Set", valor: "R$ 38.200", meta: "R$ 50.000", progress: 76, badge: "Ouro", color: "tier-gradient-gold" }
+            dia: { title: "Meta Diária", date: "06 Setembro", valor: "R$ 2.450", meta: "R$ 3.500", falta: "R$ 1.050", progress: 70, badge: "Bronze", color: "tier-bronze" },
+            semana: { title: "Meta Semanal", date: "04 Set - 10 Set", valor: "R$ 12.450", meta: "R$ 20.000", falta: "R$ 7.550", progress: 62, badge: "Prata", color: "tier-silver" },
+            mes: { title: "Meta Mensal", date: "01 Set - 30 Set", valor: "R$ 38.200", meta: "R$ 50.000", falta: "R$ 11.800", progress: 76, badge: "Ouro", color: "tier-gold" }
         };
 
         function switchPeriod(p) {
-            // Update Buttons
             ['dia', 'semana', 'mes'].forEach(item => {
-                const btn = document.getElementById('btn-' + item);
-                btn.classList.remove('bg-white', 'shadow-sm', 'text-indigo-600');
+                document.getElementById('btn-' + item).classList.remove('bg-white', 'shadow-sm', 'text-indigo-600');
             });
             document.getElementById('btn-' + p).classList.add('bg-white', 'shadow-sm', 'text-indigo-600');
 
-            // Update Card
             document.getElementById('period-title').innerText = data[p].title;
             document.getElementById('period-date').innerText = data[p].date;
             document.getElementById('total-vendas').innerText = data[p].valor;
             document.getElementById('meta-valor').innerText = data[p].meta;
+            document.getElementById('falta-valor').innerText = data[p].falta;
             document.getElementById('progress-fill').style.width = data[p].progress + '%';
             
             const badge = document.getElementById('badge-nivel');
             badge.innerText = data[p].badge;
-            badge.className = `text-[10px] text-white font-black px-2 py-0.5 rounded-full uppercase tracking-tighter ${data[p].color}`;
+            badge.className = `text-[10px] text-white font-black px-3 py-1 rounded-full uppercase ${data[p].color}`;
         }
     </script>
 </body>
