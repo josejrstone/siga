@@ -19,6 +19,8 @@
         main.hidden { display: none; }
         #tasks-page.active { display: block; }
         #tasks-page:not(.active) { display: none; }
+        .date-carousel { scrollbar-width: none; touch-action: pan-x; }
+        .date-carousel::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="bg-[#FBFDFF] text-slate-900 min-h-screen pb-28">
@@ -118,8 +120,8 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Rotina -->
             <section class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
-                <h3 class="text-sm font-black text-slate-800 uppercase tracking-widest mb-4 flex items-center gap-2">
-                    <i data-lucide="list-checks" class="w-4 h-4 text-indigo-500"></i> Minha Rotina
+                <h3 id="routine-title" role="button" tabindex="0" class="text-sm font-black text-slate-800 uppercase tracking-widest mb-4 flex items-center gap-2 cursor-pointer select-none">
+                    <i data-lucide="list-checks" class="w-4 h-4 text-indigo-500"></i> Minhas Tarefas
                 </h3>
                 <div id="routine-preview" class="space-y-3"></div>
             </section>
@@ -247,10 +249,16 @@
                 <h2 class="text-2xl font-black text-slate-800">Tarefas</h2>
                 <p class="mt-1 text-xs font-medium text-slate-500">Ordenadas por urgência</p>
             </div>
-            <label class="text-[10px] font-black uppercase tracking-wider text-slate-400">
-                Selecionar data
-                <input id="task-date-selector" type="date" class="mt-1 rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-700 outline-none focus:border-indigo-400">
-            </label>
+            <div class="flex items-end gap-2">
+                <div class="min-w-0">
+                    <p class="mb-1 text-[10px] font-black uppercase tracking-wider text-slate-400">Selecionar data</p>
+                    <div id="task-date-carousel" class="date-carousel flex max-w-[min(78vw,440px)] snap-x snap-mandatory gap-2 overflow-x-auto pb-1"></div>
+                </div>
+                <button type="button" id="open-task-calendar" aria-label="Escolher data no calendário" title="Escolher data" class="mb-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 shadow-sm transition hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-600">
+                    <i data-lucide="calendar-days" class="h-5 w-5"></i>
+                </button>
+                <input id="task-date-selector" type="date" class="sr-only" tabindex="-1" aria-hidden="true">
+            </div>
         </div>
         <div id="tasks-list" class="space-y-3"></div>
     </section>
@@ -286,7 +294,7 @@
     </div>
 
     <!-- NAV MOBILE -->
-    <nav class="md:hidden fixed bottom-0 left-0 right-0 h-20 bg-white/80 backdrop-blur-xl border-t border-slate-100 flex items-center justify-around px-4 z-40 relative">
+    <nav class="md:hidden fixed inset-x-0 bottom-0 z-[60] h-20 w-full bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl border-t border-slate-100 flex items-center justify-around px-4 relative">
         <div class="nav-indicator" id="nav-indicator" style="width: 20%; left: 0;"></div>
         <button type="button" id="nav-inicio" class="flex flex-col items-center gap-1 text-indigo-600 flex-1 relative z-10 py-1 transition-colors">
             <i data-lucide="layout-grid" class="w-6 h-6"></i>
@@ -452,10 +460,42 @@
                 navTasks.classList.add('text-indigo-600');
                 indicator.style.left = '60%';
                 const dateSelector = document.getElementById('task-date-selector');
-                dateSelector.valueAsDate = new Date();
-                currentSelectedDate = getLocalDateKey();
+                dateSelector.value = currentSelectedDate;
+                renderDateCarousel();
                 renderTasksByDate(currentSelectedDate);
             }
+        }
+
+        function renderDateCarousel() {
+            const carousel = document.getElementById('task-date-carousel');
+            const selectedDate = new Date(`${currentSelectedDate}T12:00:00`);
+            const formatter = new Intl.DateTimeFormat('pt-BR', { weekday: 'short', day: '2-digit', month: 'short' });
+            const dates = Array.from({ length: 15 }, (_, index) => {
+                const date = new Date(selectedDate);
+                date.setDate(selectedDate.getDate() + index - 7);
+                return date;
+            });
+            carousel.innerHTML = dates.map(date => {
+                const dateKey = getLocalDateKey(date);
+                const isSelected = dateKey === currentSelectedDate;
+                const isToday = dateKey === getLocalDateKey();
+                const label = formatter.format(date).replace('.', '');
+                return `<button type="button" data-task-date="${dateKey}" class="date-option snap-center shrink-0 rounded-xl border px-3 py-2 text-left transition ${isSelected ? 'border-indigo-500 bg-indigo-600 text-white shadow-lg shadow-indigo-200' : 'border-slate-200 bg-white text-slate-500 hover:border-indigo-300 hover:bg-indigo-50'}" aria-pressed="${isSelected}">
+                    <span class="block text-[9px] font-black uppercase tracking-wide opacity-80">${isToday ? 'Hoje' : label.split(',')[0]}</span>
+                    <span class="block text-sm font-black">${date.getDate()}</span>
+                    <span class="block text-[9px] font-semibold opacity-80">${label.split(',')[1] || ''}</span>
+                </button>`;
+            }).join('');
+            const activeOption = carousel.querySelector(`[data-task-date="${currentSelectedDate}"]`);
+            activeOption?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            lucide.createIcons();
+        }
+
+        function selectTaskDate(dateKey) {
+            currentSelectedDate = dateKey;
+            document.getElementById('task-date-selector').value = dateKey;
+            renderDateCarousel();
+            renderTasksByDate(currentSelectedDate);
         }
 
         function renderTasksByDate(dateKey) {
@@ -557,6 +597,14 @@
         function bindTaskActions() {
             document.getElementById('nav-inicio').addEventListener('click', () => showPage('dashboard'));
             document.getElementById('nav-tasks').addEventListener('click', () => showPage('tasks'));
+            const routineTitle = document.getElementById('routine-title');
+            routineTitle.addEventListener('click', () => showPage('tasks'));
+            routineTitle.addEventListener('keydown', event => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    showPage('tasks');
+                }
+            });
             document.getElementById('fab-button').addEventListener('click', () => {
                 const tasksPage = document.getElementById('tasks-page');
                 if (tasksPage.classList.contains('active')) openNewTaskModal();
@@ -576,8 +624,16 @@
                 renderTasksByDate(currentSelectedDate);
             });
             document.getElementById('task-date-selector').addEventListener('change', event => {
-                currentSelectedDate = event.target.value;
-                renderTasksByDate(currentSelectedDate);
+                selectTaskDate(event.target.value);
+            });
+            document.getElementById('open-task-calendar').addEventListener('click', () => {
+                const dateSelector = document.getElementById('task-date-selector');
+                if (typeof dateSelector.showPicker === 'function') dateSelector.showPicker();
+                else dateSelector.click();
+            });
+            document.getElementById('task-date-carousel').addEventListener('click', event => {
+                const dateOption = event.target.closest('[data-task-date]');
+                if (dateOption) selectTaskDate(dateOption.dataset.taskDate);
             });
             document.addEventListener('click', event => {
                 const toggleButton = event.target.closest('[data-toggle-task]');
