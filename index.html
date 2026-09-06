@@ -175,18 +175,10 @@
                     <h3 class="text-sm font-black text-slate-800 uppercase tracking-widest flex items-center gap-2">
                         <i data-lucide="shopping-cart" class="w-4 h-4 text-indigo-600"></i> Vendas Hoje
                     </h3>
-                    <input type="date" value="2024-09-06" class="text-[10px] font-bold text-slate-400 bg-slate-50 border-none rounded-lg p-1">
+                    <button type="button" id="open-sales-from-dashboard" class="text-[10px] font-black uppercase tracking-wider text-indigo-500">Ver detalhes</button>
                 </div>
-                <div class="divide-y divide-slate-50">
-                    <div class="py-3 flex justify-between items-center">
-                        <span class="text-xs font-medium text-slate-500 italic">14:05 - Atendimento #102</span>
-                        <span class="text-sm font-black text-slate-800">R$ 890,00</span>
-                    </div>
-                    <div class="py-3 flex justify-between items-center">
-                        <span class="text-xs font-medium text-slate-500 italic">10:30 - Atendimento #098</span>
-                        <span class="text-sm font-black text-slate-800">R$ 1.560,00</span>
-                    </div>
-                </div>
+                <p id="dashboard-sales-total" class="mb-3 text-2xl font-black text-indigo-600">R$ 0,00</p>
+                <div id="dashboard-sales-list" class="divide-y divide-slate-50"></div>
             </div>
 
             <div id="mood-card" class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm transition-all">
@@ -281,11 +273,22 @@
         <div class="rounded-[2rem] bg-indigo-600 p-6 text-white shadow-lg shadow-indigo-100"><p class="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-100">Volume de vendas</p><p id="sales-total" class="mt-2 text-4xl font-black">R$ 0,00</p><p id="sales-count" class="mt-1 text-xs font-semibold text-indigo-100">0 registros</p></div>
         <div class="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
             <div id="sales-date-carousel" class="date-carousel flex snap-x snap-mandatory gap-2 overflow-x-auto pb-1"></div>
-            <div id="sales-week-days" class="mt-3 hidden flex-wrap gap-2"></div>
+            <div id="sales-week-days" class="mt-3 hidden grid gap-3 md:grid-cols-2">
+                <label class="text-[10px] font-black uppercase tracking-wider text-slate-400">Início da semana
+                    <input id="sales-week-start" type="date" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-bold text-slate-700">
+                </label>
+                <label class="text-[10px] font-black uppercase tracking-wider text-slate-400">Fim da semana
+                    <input id="sales-week-end" type="date" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-bold text-slate-700">
+                </label>
+            </div>
             <label id="sales-month-picker" class="mt-3 hidden text-[10px] font-black uppercase tracking-wider text-slate-400">Mês de referência
                 <input id="sales-month-selector" type="month" class="mt-1 rounded-xl border border-slate-200 px-3 py-2 text-sm font-bold text-slate-700">
             </label>
         </div>
+        <section class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+            <div class="mb-4 flex items-center justify-between"><h3 class="text-sm font-black uppercase tracking-wider text-slate-800">Produtos mais vendidos</h3><span class="text-[10px] font-bold text-slate-400">Quantidade</span></div>
+            <div id="sales-products-report" class="space-y-2"></div>
+        </section>
         <div id="sales-list" class="space-y-3"></div>
     </section>
 
@@ -342,6 +345,11 @@
                 <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400">Cliente (opcional)<input id="sale-client-input" maxlength="100" placeholder="Nome do cliente" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-700 outline-none focus:border-indigo-400"></label>
                 <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400">Valor da venda<input id="sale-value-input" required type="number" min="0.01" step="0.01" placeholder="0,00" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-700 outline-none focus:border-indigo-400"></label>
                 <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400">Data e horário<input id="sale-datetime-input" required type="datetime-local" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-700 outline-none focus:border-indigo-400"></label>
+                <div>
+                    <p class="mb-2 text-[10px] font-black uppercase tracking-wider text-slate-400">Produtos vendidos</p>
+                    <div id="sale-product-options" class="grid max-h-52 grid-cols-2 gap-2 overflow-y-auto sm:grid-cols-3"></div>
+                    <p id="sale-product-feedback" class="mt-2 min-h-4 text-[10px] font-semibold text-red-500"></p>
+                </div>
                 <div class="flex justify-end gap-2 pt-4"><button type="button" id="cancel-new-sale" class="rounded-xl px-4 py-2.5 text-xs font-bold text-slate-500">Cancelar</button><button type="submit" class="rounded-xl bg-emerald-500 px-5 py-2.5 text-xs font-bold text-white">Registrar</button></div>
             </form>
         </div>
@@ -627,10 +635,14 @@
         }
 
         const salesStorageKey = 'siga-vendas';
+        const saleProducts = ['Tênis casual', 'Tênis esportivo', 'Sapatênis', 'Sandália', 'Rasteirinha', 'Cintos', 'Camisa', 'Bermuda', 'Bolsa', 'Mala de viagem', 'Acessório esportivo', 'Acessório de moda', 'Chuteira', 'Bola', 'Tops', 'Maiô', 'Meia', 'Carteira', 'Outros'];
+        const productsWithGender = new Set(['Tênis casual', 'Tênis esportivo', 'Sapatênis', 'Sandália', 'Rasteirinha', 'Cintos', 'Camisa', 'Bermuda', 'Bolsa', 'Mala de viagem', 'Acessório de moda', 'Chuteira', 'Tops', 'Maiô', 'Meia', 'Carteira']);
         let salesPeriod = 'day';
         let salesSelectedDate = getLocalDateKey();
         let salesSelectedMonth = salesSelectedDate.slice(0, 7);
-        let salesSelectedWeekDays = [];
+        let salesWeekStart = salesSelectedDate;
+        let salesWeekEnd = salesSelectedDate;
+        let editingSaleId = null;
 
         function getSales() {
             try {
@@ -649,8 +661,7 @@
             const sales = getSales();
             if (salesPeriod === 'day') return sales.filter(sale => sale.date === salesSelectedDate);
             if (salesPeriod === 'month') return sales.filter(sale => sale.date.slice(0, 7) === salesSelectedMonth);
-            const selectedDays = salesSelectedWeekDays.length ? salesSelectedWeekDays : [salesSelectedDate];
-            return sales.filter(sale => selectedDays.includes(sale.date));
+            return sales.filter(sale => sale.date >= salesWeekStart && sale.date <= salesWeekEnd);
         }
 
         function money(value) {
@@ -677,12 +688,39 @@
             document.getElementById('sales-month-selector').value = salesSelectedMonth;
             document.getElementById('sales-total').textContent = money(total);
             document.getElementById('sales-count').textContent = `${periodSales.length} registro${periodSales.length === 1 ? '' : 's'}`;
-            document.getElementById('sales-period-label').textContent = salesPeriod === 'day' ? `Vendas de ${new Date(`${salesSelectedDate}T12:00:00`).toLocaleDateString('pt-BR')}` : salesPeriod === 'month' ? `Vendas de ${salesSelectedMonth}` : 'Soma dos dias selecionados';
-            document.getElementById('sales-list').innerHTML = periodSales.length ? periodSales.map(sale => `<article class="flex items-center justify-between rounded-2xl border border-slate-100 bg-white p-4 shadow-sm"><div><p class="text-sm font-bold text-slate-700">${escapeHtml(sale.client || 'Cliente não informado')}</p><p class="mt-1 text-[10px] font-semibold text-slate-400">${new Date(sale.datetime).toLocaleDateString('pt-BR')} às ${new Date(sale.datetime).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</p></div><strong class="text-sm font-black text-emerald-600">${money(sale.value)}</strong></article>`).join('') : '<p class="rounded-2xl bg-white p-5 text-xs text-slate-400">Nenhuma venda registrada neste período.</p>';
+            document.getElementById('sales-period-label').textContent = salesPeriod === 'day' ? `Vendas de ${new Date(`${salesSelectedDate}T12:00:00`).toLocaleDateString('pt-BR')}` : salesPeriod === 'month' ? `Vendas de ${salesSelectedMonth}` : `Vendas de ${new Date(`${salesWeekStart}T12:00:00`).toLocaleDateString('pt-BR')} até ${new Date(`${salesWeekEnd}T12:00:00`).toLocaleDateString('pt-BR')}`;
+            const productsReport = {};
+            periodSales.forEach(sale => (sale.products || []).forEach(product => { const key = product.name || product; productsReport[key] = (productsReport[key] || 0) + 1; }));
+            const reportEntries = Object.entries(productsReport).sort((first, second) => second[1] - first[1]);
+            document.getElementById('sales-products-report').innerHTML = reportEntries.length ? reportEntries.map(([name, quantity]) => `<div class="flex items-center justify-between rounded-xl bg-slate-50 px-3 py-2"><span class="text-xs font-bold text-slate-600">${escapeHtml(name)}</span><strong class="text-xs font-black text-indigo-600">${quantity}</strong></div>`).join('') : '<p class="text-xs text-slate-400">Nenhum produto registrado neste período.</p>';
+            document.getElementById('sales-list').innerHTML = periodSales.length ? periodSales.map(sale => `<article class="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm"><div class="flex items-start justify-between gap-3"><div><p class="text-sm font-bold text-slate-700">${escapeHtml(sale.client || 'Cliente não informado')}</p><p class="mt-1 text-[10px] font-semibold text-slate-400">${new Date(sale.datetime).toLocaleDateString('pt-BR')} às ${new Date(sale.datetime).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</p></div><div class="flex items-center gap-2"><strong class="text-sm font-black text-emerald-600">${money(sale.value)}</strong><button type="button" data-edit-sale="${sale.id}" aria-label="Editar venda" class="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-50 hover:text-indigo-600"><i data-lucide="pencil" class="h-4 w-4"></i></button><button type="button" data-delete-sale="${sale.id}" aria-label="Excluir venda" class="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-50 hover:text-red-600"><i data-lucide="trash-2" class="h-4 w-4"></i></button></div></div><div class="mt-3 flex flex-wrap gap-1">${(sale.products || []).map(product => `<span class="rounded-full bg-indigo-50 px-2 py-1 text-[10px] font-bold text-indigo-600">${escapeHtml(product.name || product)}${product.gender ? ` · ${escapeHtml(product.gender)}` : ''}</span>`).join('')}</div></article>`).join('') : '<p class="rounded-2xl bg-white p-5 text-xs text-slate-400">Nenhuma venda registrada neste período.</p>';
+            renderDashboardSales();
             renderSalesDateCarousel();
+            lucide.createIcons();
+        }
+
+        function renderDashboardSales() {
+            const todaySales = getSales().filter(sale => sale.date === getLocalDateKey()).sort((first, second) => second.datetime.localeCompare(first.datetime));
+            document.getElementById('dashboard-sales-total').textContent = money(todaySales.reduce((sum, sale) => sum + Number(sale.value), 0));
+            document.getElementById('dashboard-sales-list').innerHTML = todaySales.length ? todaySales.slice(0, 3).map(sale => `<div class="flex items-center justify-between py-3"><span class="text-xs font-medium text-slate-500">${new Date(sale.datetime).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })} · ${escapeHtml(sale.client || 'Cliente não informado')}</span><span class="text-sm font-black text-slate-800">${money(sale.value)}</span></div>`).join('') : '<p class="py-3 text-xs text-slate-400">Nenhuma venda registrada hoje.</p>';
+        }
+
+        function renderSaleProductOptions(selectedProducts = []) {
+            document.getElementById('sale-product-options').innerHTML = saleProducts.map(product => {
+                const selected = selectedProducts.find(item => (item.name || item) === product);
+                const gender = selected?.gender || '';
+                return `<div data-sale-product="${escapeHtml(product)}" class="sale-product-card rounded-xl border p-2 ${selected ? 'border-indigo-500 bg-indigo-50' : 'border-slate-200 bg-white'}"><button type="button" class="w-full text-left text-[11px] font-bold text-slate-600">${product}</button>${productsWithGender.has(product) && selected ? `<select data-sale-gender="${escapeHtml(product)}" class="mt-2 w-full rounded-lg border border-slate-200 bg-white px-2 py-1 text-[10px] font-bold text-slate-600"><option value="">Sem gênero</option><option ${gender === 'Masculino' ? 'selected' : ''}>Masculino</option><option ${gender === 'Feminino' ? 'selected' : ''}>Feminino</option></select>` : ''}</div>`;
+            }).join('');
+        }
+
+        function getSelectedSaleProducts() {
+            return Array.from(document.querySelectorAll('.sale-product-card')).filter(card => card.classList.contains('border-indigo-500')).map(card => ({ name: card.dataset.saleProduct, gender: card.querySelector('[data-sale-gender]')?.value || '' }));
         }
 
         function openNewSaleModal() {
+            editingSaleId = null;
+            document.getElementById('new-sale-form').reset();
+            document.getElementById('sale-product-feedback').textContent = '';
             const modal = document.getElementById('new-sale-modal');
             modal.classList.remove('hidden');
             modal.classList.add('flex');
@@ -690,9 +728,22 @@
             now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
             document.getElementById('sale-datetime-input').value = now.toISOString().slice(0, 16);
             document.getElementById('sale-value-input').focus();
+            renderSaleProductOptions();
+        }
+
+        function openEditSaleModal(sale) {
+            editingSaleId = sale.id;
+            document.getElementById('sale-client-input').value = sale.client || '';
+            document.getElementById('sale-value-input').value = sale.value;
+            document.getElementById('sale-datetime-input').value = sale.datetime;
+            renderSaleProductOptions(sale.products || []);
+            const modal = document.getElementById('new-sale-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
         }
 
         function closeNewSaleModal() {
+            editingSaleId = null;
             const modal = document.getElementById('new-sale-modal');
             modal.classList.add('hidden');
             modal.classList.remove('flex');
@@ -710,21 +761,8 @@
         }
 
         function renderSalesWeekDays() {
-            const anchor = new Date(`${salesSelectedDate}T12:00:00`);
-            const monday = new Date(anchor);
-            const day = monday.getDay() || 7;
-            monday.setDate(monday.getDate() - day + 1);
-            const days = Array.from({ length: 7 }, (_, index) => {
-                const date = new Date(monday);
-                date.setDate(monday.getDate() + index);
-                return date;
-            });
-            if (!salesSelectedWeekDays.length) salesSelectedWeekDays = days.map(getLocalDateKey);
-            document.getElementById('sales-week-days').innerHTML = days.map(date => {
-                const key = getLocalDateKey(date);
-                const active = salesSelectedWeekDays.includes(key);
-                return `<button type="button" data-sales-week-day="${key}" class="rounded-xl border px-3 py-2 text-[10px] font-bold ${active ? 'border-indigo-500 bg-indigo-600 text-white' : 'border-slate-200 bg-white text-slate-500'}">${date.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit' })}</button>`;
-            }).join('');
+            document.getElementById('sales-week-start').value = salesWeekStart;
+            document.getElementById('sales-week-end').value = salesWeekEnd;
         }
 
         let observationTaskId = null;
@@ -871,27 +909,35 @@
                 if (dateOption) selectTaskDate(dateOption.dataset.taskDate);
             });
             document.querySelectorAll('[data-sales-period]').forEach(button => button.addEventListener('click', () => showSalesPeriod(button.dataset.salesPeriod)));
+            document.getElementById('open-sales-from-dashboard').addEventListener('click', () => showPage('sales'));
             document.getElementById('sales-date-carousel').addEventListener('click', event => {
                 const button = event.target.closest('[data-sales-date]');
-                if (button) { salesSelectedDate = button.dataset.salesDate; salesSelectedWeekDays = []; renderSales(); }
+                if (button) { salesSelectedDate = button.dataset.salesDate; salesWeekStart = salesSelectedDate; salesWeekEnd = salesSelectedDate; renderSales(); }
             });
-            document.getElementById('sales-week-days').addEventListener('click', event => {
-                const button = event.target.closest('[data-sales-week-day]');
-                if (!button) return;
-                const key = button.dataset.salesWeekDay;
-                salesSelectedWeekDays = salesSelectedWeekDays.includes(key) ? salesSelectedWeekDays.filter(day => day !== key) : [...salesSelectedWeekDays, key];
-                renderSalesWeekDays();
-                renderSales();
-            });
+            document.getElementById('sales-week-start').addEventListener('change', event => { salesWeekStart = event.target.value; if (salesWeekStart > salesWeekEnd) salesWeekEnd = salesWeekStart; renderSales(); });
+            document.getElementById('sales-week-end').addEventListener('change', event => { salesWeekEnd = event.target.value; if (salesWeekEnd < salesWeekStart) salesWeekStart = salesWeekEnd; renderSales(); });
             document.getElementById('sales-month-selector').addEventListener('change', event => { salesSelectedMonth = event.target.value; renderSales(); });
+            document.getElementById('sale-product-options').addEventListener('click', event => {
+                const card = event.target.closest('[data-sale-product]');
+                if (!card || event.target.closest('select')) return;
+                const selected = card.classList.toggle('border-indigo-500');
+                card.classList.toggle('bg-indigo-50', selected);
+                card.classList.toggle('border-slate-200', !selected);
+                renderSaleProductOptions(getSelectedSaleProducts());
+            });
             document.getElementById('new-sale-form').addEventListener('submit', event => {
                 event.preventDefault();
                 const datetime = document.getElementById('sale-datetime-input').value;
                 const value = Number(document.getElementById('sale-value-input').value);
-                if (!datetime || !value || value <= 0) return;
+                const products = getSelectedSaleProducts();
+                if (!datetime || !value || value <= 0 || !products.length) {
+                    document.getElementById('sale-product-feedback').textContent = products.length ? '' : 'Escolha pelo menos um produto.';
+                    return;
+                }
                 const sales = getSales();
-                sales.push({ id: `sale-${Date.now()}`, client: document.getElementById('sale-client-input').value.trim(), value, datetime, date: datetime.slice(0, 10) });
-                saveSales(sales);
+                const sale = { id: editingSaleId || `sale-${Date.now()}`, client: document.getElementById('sale-client-input').value.trim(), value, datetime, date: datetime.slice(0, 10), products };
+                const updatedSales = editingSaleId ? sales.map(item => item.id === editingSaleId ? sale : item) : [...sales, sale];
+                saveSales(updatedSales);
                 event.target.reset();
                 closeNewSaleModal();
                 renderSales();
@@ -911,6 +957,20 @@
 
                 const observationPreview = event.target.closest('[data-expand-observation]');
                 if (observationPreview) observationPreview.classList.toggle('observation-expanded');
+
+                const editSaleButton = event.target.closest('[data-edit-sale]');
+                if (editSaleButton) {
+                    const sale = getSales().find(item => item.id === editSaleButton.dataset.editSale);
+                    if (sale) openEditSaleModal(sale);
+                }
+
+                const deleteSaleButton = event.target.closest('[data-delete-sale]');
+                if (deleteSaleButton) {
+                    if (window.confirm('Excluir esta venda?')) {
+                        saveSales(getSales().filter(item => item.id !== deleteSaleButton.dataset.deleteSale));
+                        renderSales();
+                    }
+                }
 
                 const editButton = event.target.closest('[data-edit-task]');
                 if (editButton) {
@@ -950,6 +1010,7 @@
             bindTaskActions();
             initObservationEditor();
             initTaskNotifications();
+            renderDashboardSales();
         }
 
         initTasks();
