@@ -30,6 +30,74 @@
 </head>
 <body class="bg-[#FBFDFF] text-slate-900 min-h-screen pb-28">
 
+    <!-- LANDING -->
+    <div id="view-landing" class="hidden min-h-screen items-center justify-center bg-[#FBFDFF] p-6">
+        <div class="text-center">
+            <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-600 text-white"><i data-lucide="zap" class="h-7 w-7"></i></div>
+            <h1 class="text-2xl font-black text-slate-800">SIGA</h1>
+            <p class="mt-2 text-sm text-slate-500">Acesse pelo link fornecido pela sua loja.</p>
+            <a href="#master-login" class="mt-6 inline-block text-[10px] font-black uppercase tracking-widest text-indigo-400 hover:text-indigo-600">Área administrativa</a>
+        </div>
+    </div>
+
+    <!-- LOGIN MASTER -->
+    <div id="view-master-login" class="hidden min-h-screen items-center justify-center bg-[#FBFDFF] p-6">
+        <form id="master-login-form" class="w-full max-w-sm rounded-[2rem] border border-slate-100 bg-white p-8 shadow-xl">
+            <div class="mb-6 text-center"><div class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-600 text-white"><i data-lucide="shield-check" class="h-6 w-6"></i></div><h1 class="text-lg font-black text-slate-800">Painel Master</h1><p class="text-xs text-slate-400">Acesso administrativo</p></div>
+            <label class="mb-3 block text-[10px] font-black uppercase tracking-wider text-slate-400">E-mail<input id="master-email-input" type="email" required class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium outline-none focus:border-indigo-400"></label>
+            <label class="mb-4 block text-[10px] font-black uppercase tracking-wider text-slate-400">Senha<input id="master-password-input" type="password" required class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium outline-none focus:border-indigo-400"></label>
+            <p id="master-login-error" class="mb-3 min-h-4 text-center text-[10px] font-bold text-red-500"></p>
+            <button type="submit" class="w-full rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-black text-white hover:bg-indigo-700">Entrar</button>
+            <a href="#" class="mt-4 block text-center text-[10px] font-bold text-slate-400 hover:text-slate-600">Voltar</a>
+        </form>
+    </div>
+
+    <!-- LOGIN DE LOJA/PESSOA -->
+    <div id="view-pessoa-login" class="hidden min-h-screen items-center justify-center bg-[#FBFDFF] p-6">
+        <form id="pessoa-login-form" class="w-full max-w-sm rounded-[2rem] border border-slate-100 bg-white p-8 shadow-xl">
+            <div class="mb-6 text-center"><div class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-600 text-white"><i data-lucide="log-in" class="h-6 w-6"></i></div><h1 id="pessoa-login-title" class="text-lg font-black text-slate-800">Acesso da equipe</h1><p id="pessoa-login-subtitle" class="text-xs text-slate-400">Informe seu login e senha</p></div>
+            <label class="mb-3 block text-[10px] font-black uppercase tracking-wider text-slate-400">Login<input id="pessoa-username-input" required class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium outline-none focus:border-indigo-400"></label>
+            <label class="mb-4 block text-[10px] font-black uppercase tracking-wider text-slate-400">Senha<input id="pessoa-password-input" type="password" required class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium outline-none focus:border-indigo-400"></label>
+            <p id="pessoa-login-error" class="mb-3 min-h-4 text-center text-[10px] font-bold text-red-500"></p>
+            <button type="submit" class="w-full rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-black text-white hover:bg-indigo-700">Entrar</button>
+        </form>
+    </div>
+
+    <!-- PAINEL MASTER -->
+    <div id="view-master-panel" class="hidden min-h-screen bg-[#FBFDFF]">
+        <header class="sticky top-0 z-50 border-b border-slate-100 bg-white/80 backdrop-blur-xl">
+            <div class="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+                <div class="flex items-center gap-2"><div class="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-white"><i data-lucide="shield-check" class="h-5 w-5"></i></div><span class="text-xl font-black text-slate-800">SIGA Admin</span></div>
+                <button type="button" id="master-logout" class="rounded-xl bg-slate-100 px-4 py-2 text-xs font-black text-slate-600 hover:bg-slate-200">Sair</button>
+            </div>
+        </header>
+        <main class="mx-auto max-w-5xl space-y-6 p-4">
+            <section class="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-sm">
+                <h2 class="mb-4 text-lg font-black text-slate-800">Lojas cadastradas</h2>
+                <form id="loja-form" class="mb-4 flex flex-wrap gap-2">
+                    <input id="loja-name-input" required placeholder="Nome da loja" class="min-w-0 flex-1 rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium outline-none focus:border-indigo-400">
+                    <button type="submit" class="rounded-xl bg-indigo-600 px-5 py-2.5 text-xs font-black text-white hover:bg-indigo-700">Adicionar loja</button>
+                </form>
+                <div id="loja-list" class="space-y-2"></div>
+            </section>
+
+            <section id="loja-team-section" class="hidden rounded-[2rem] border border-slate-100 bg-white p-6 shadow-sm">
+                <div class="mb-4 flex items-center justify-between"><h2 id="loja-team-title" class="text-lg font-black text-slate-800">Equipe da loja</h2><button type="button" id="close-loja-team" class="text-[10px] font-black uppercase text-slate-400">Fechar</button></div>
+                <form id="usuario-form" class="mb-4 grid gap-3 sm:grid-cols-2">
+                    <input type="hidden" id="usuario-editing-id">
+                    <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400 sm:col-span-2">Nome completo<input id="usuario-name-input" required class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium outline-none focus:border-indigo-400"></label>
+                    <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400">Função<select id="usuario-role-input" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium outline-none focus:border-indigo-400"><option value="vendedor">Vendedor</option><option value="gerente">Gerente</option></select></label>
+                    <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400">Login<input id="usuario-username-input" required class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium outline-none focus:border-indigo-400"></label>
+                    <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400 sm:col-span-2">Senha<input id="usuario-password-input" required class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium outline-none focus:border-indigo-400"></label>
+                    <div class="flex justify-end gap-2 sm:col-span-2"><button type="button" id="cancel-usuario-edit" class="hidden rounded-xl px-4 py-2.5 text-xs font-bold text-slate-500">Cancelar edição</button><button type="submit" class="rounded-xl bg-emerald-500 px-5 py-2.5 text-xs font-black text-white hover:bg-emerald-600">Salvar acesso</button></div>
+                </form>
+                <div id="usuario-list" class="space-y-2"></div>
+            </section>
+        </main>
+    </div>
+
+    <div id="app-shell" class="hidden">
+
     <!-- HEADER -->
     <header class="sticky top-0 z-50 bg-white/70 backdrop-blur-xl border-b border-slate-100">
         <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -39,8 +107,18 @@
                 </div>
                 <span class="text-xl font-black tracking-tighter text-slate-800">SIGA</span>
             </div>
-            <div class="flex items-center gap-3 bg-slate-100 p-1 rounded-full">
-                <div class="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white text-[10px] font-bold">CS</div>
+            <div class="flex items-center gap-3">
+                <span id="session-user-label" class="hidden text-[10px] font-black uppercase tracking-wider text-slate-400 sm:inline"></span>
+                <button type="button" id="app-logout" aria-label="Sair" class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-red-50 hover:text-red-600"><i data-lucide="log-out" class="h-4 w-4"></i></button>
+            </div>
+        </div>
+        <div id="manager-bar" class="hidden border-t border-amber-100 bg-amber-50 px-4 py-2">
+            <div class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2 text-xs font-bold text-amber-700"><i data-lucide="shield" class="h-4 w-4"></i><span id="manager-bar-label">Modo gerente</span></div>
+                <div class="flex items-center gap-2">
+                    <select id="manager-vendor-select" class="rounded-lg border border-amber-200 bg-white px-2 py-1 text-xs font-bold text-slate-700"></select>
+                    <button type="button" id="manager-overview-button" class="rounded-lg bg-amber-500 px-3 py-1.5 text-[10px] font-black text-white hover:bg-amber-600">Visão geral</button>
+                </div>
             </div>
         </div>
         <nav id="desktop-navigation" class="hidden border-t border-slate-100 bg-white/80 md:block">
@@ -410,6 +488,12 @@
         </div>
     </div>
 
+    <!-- VISÃO GERAL DO GERENTE -->
+    <section id="manager-overview-page" class="hidden max-w-5xl mx-auto p-4 space-y-6">
+        <div class="flex items-center gap-3"><button type="button" data-back-dashboard aria-label="Voltar ao início" class="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-500 hover:bg-indigo-50 hover:text-indigo-600"><i data-lucide="arrow-left" class="h-4 w-4"></i></button><div><h2 class="text-2xl font-black text-slate-800">Visão geral de tarefas</h2><p class="mt-1 text-xs font-medium text-slate-500">Todas as tarefas da equipe, com o nome do vendedor</p></div></div>
+        <div id="manager-overview-list" class="space-y-3"></div>
+    </section>
+
     <!-- NAV MOBILE -->
     <nav id="mobile-navigation" class="md:hidden fixed inset-x-0 bottom-0 z-[60] h-20 w-full bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl border-t border-slate-100 flex items-center justify-around px-4">
         <div class="nav-indicator" id="nav-indicator" style="width: 20%; left: 0;"></div>
@@ -432,10 +516,387 @@
         </button>
     </nav>
 
+    </div>
+
     <script>
         lucide.createIcons();
 
-        const taskStorageKey = 'siga-tarefas';
+        // ================= AUTENTICAÇÃO E MULTI-LOJA =================
+        const MASTER_CREDENTIALS = { email: 'admin@siga.com', password: 'admin123' };
+        const lojasStorageKey = 'siga-lojas';
+        const usuariosStorageKey = 'siga-usuarios';
+        const sessionStorageName = 'siga-sessao';
+
+        function slugify(text) {
+            return String(text || '').toLowerCase().trim()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/(^-+|-+$)/g, '') || 'item';
+        }
+
+        function uniqueSlugFor(list, base) {
+            const slug = slugify(base);
+            let attempt = slug;
+            let counter = 2;
+            while (list.some(item => item.slug === attempt)) { attempt = `${slug}-${counter}`; counter += 1; }
+            return attempt;
+        }
+
+        function getLojas() {
+            try { const saved = JSON.parse(localStorage.getItem(lojasStorageKey)); return Array.isArray(saved) ? saved : []; } catch (error) { return []; }
+        }
+        function saveLojas(list) { localStorage.setItem(lojasStorageKey, JSON.stringify(list)); }
+
+        function getUsuarios() {
+            try { const saved = JSON.parse(localStorage.getItem(usuariosStorageKey)); return Array.isArray(saved) ? saved : []; } catch (error) { return []; }
+        }
+        function saveUsuarios(list) { localStorage.setItem(usuariosStorageKey, JSON.stringify(list)); }
+
+        function accessLinkFor(usuario) {
+            return `${location.origin}${location.pathname}#acesso/${usuario.fullSlug}`;
+        }
+
+        function getSession() {
+            try { return JSON.parse(localStorage.getItem(sessionStorageName)); } catch (error) { return null; }
+        }
+        function saveSession(session) { localStorage.setItem(sessionStorageName, JSON.stringify(session)); }
+        function clearSession() { localStorage.removeItem(sessionStorageName); }
+
+        function effectiveUserId() {
+            const session = getSession();
+            if (!session || session.type !== 'user') return null;
+            return session.viewingUserId || session.userId;
+        }
+
+        function scopedKey(base) {
+            const uid = effectiveUserId();
+            return uid ? `${base}::${uid}` : base;
+        }
+
+        function hideAllViews() {
+            ['view-landing', 'view-master-login', 'view-pessoa-login'].forEach(id => {
+                const el = document.getElementById(id);
+                el.classList.add('hidden');
+                el.classList.remove('flex');
+            });
+            document.getElementById('view-master-panel').classList.add('hidden');
+            document.getElementById('app-shell').classList.add('hidden');
+        }
+
+        function showFlexView(id) {
+            hideAllViews();
+            const el = document.getElementById(id);
+            el.classList.remove('hidden');
+            el.classList.add('flex');
+        }
+
+        let appStarted = false;
+        let selectedLojaId = null;
+
+        function applyRoute() {
+            const hash = location.hash.replace(/^#/, '');
+            const session = getSession();
+
+            if (hash.startsWith('acesso/')) {
+                showPersonLogin(hash.slice('acesso/'.length));
+                return;
+            }
+            if (hash === 'master-login') {
+                if (session?.type === 'master') { location.hash = 'master'; return; }
+                showFlexView('view-master-login');
+                return;
+            }
+            if (hash === 'master') {
+                if (session?.type !== 'master') { location.hash = 'master-login'; return; }
+                hideAllViews();
+                document.getElementById('view-master-panel').classList.remove('hidden');
+                renderMasterPanel();
+                return;
+            }
+            if (hash === 'app' || hash === 'manager-overview') {
+                if (session?.type !== 'user') { location.hash = ''; return; }
+                if (hash === 'manager-overview' && session.role !== 'gerente') { location.hash = 'app'; return; }
+                hideAllViews();
+                document.getElementById('app-shell').classList.remove('hidden');
+                startAppIfNeeded();
+                renderManagerBar();
+                if (hash === 'manager-overview') showPage('manager-overview');
+                return;
+            }
+            if (session?.type === 'master') { location.hash = 'master'; return; }
+            if (session?.type === 'user') { location.hash = 'app'; return; }
+            showFlexView('view-landing');
+        }
+
+        function showPersonLogin(fullSlug) {
+            const usuario = getUsuarios().find(item => item.fullSlug === fullSlug);
+            const loja = usuario ? getLojas().find(item => item.id === usuario.lojaId) : null;
+            showFlexView('view-pessoa-login');
+            const form = document.getElementById('pessoa-login-form');
+            form.dataset.fullSlug = fullSlug;
+            document.getElementById('pessoa-login-error').textContent = '';
+            if (usuario && loja) {
+                document.getElementById('pessoa-login-title').textContent = loja.name;
+                document.getElementById('pessoa-login-subtitle').textContent = `Acesso de ${usuario.role === 'gerente' ? 'gerente' : 'vendedor'}: ${usuario.name}`;
+            } else {
+                document.getElementById('pessoa-login-title').textContent = 'Link inválido';
+                document.getElementById('pessoa-login-subtitle').textContent = 'Verifique o link com o administrador da loja.';
+            }
+        }
+
+        function startAppIfNeeded() {
+            if (appStarted) { refreshAllAppViews(); return; }
+            appStarted = true;
+            initTasks();
+            initMoodCard();
+            bindManagerBar();
+            document.getElementById('app-logout').addEventListener('click', () => { clearSession(); location.href = location.pathname; });
+        }
+
+        function refreshAllAppViews() {
+            showPage('dashboard');
+            renderDashboardSales();
+            refreshMoodCard();
+        }
+
+        function currentTaskOwnerRole() {
+            const session = getSession();
+            return session?.role === 'gerente' ? 'manager' : 'user';
+        }
+
+        function renderManagerBar() {
+            const bar = document.getElementById('manager-bar');
+            const label = document.getElementById('session-user-label');
+            const session = getSession();
+            label.classList.remove('hidden');
+            label.textContent = session?.name ? `${session.name}${session.role === 'gerente' ? ' · Gerente' : ''}` : '';
+            if (!session || session.type !== 'user' || session.role !== 'gerente') { bar.classList.add('hidden'); return; }
+            bar.classList.remove('hidden');
+            const vendedores = getUsuarios().filter(item => item.lojaId === session.lojaId && item.role === 'vendedor');
+            const select = document.getElementById('manager-vendor-select');
+            const currentViewing = session.viewingUserId || session.userId;
+            select.innerHTML = `<option value="${session.userId}">Minha visão (Gerente)</option>` + vendedores.map(vendedor => `<option value="${vendedor.id}">${escapeHtml(vendedor.name)}</option>`).join('');
+            select.value = currentViewing;
+            document.getElementById('manager-bar-label').textContent = currentViewing === session.userId ? 'Visualizando: minha própria conta' : `Visualizando: ${escapeHtml(vendedores.find(item => item.id === currentViewing)?.name || '')}`;
+        }
+
+        function bindManagerBar() {
+            document.getElementById('manager-vendor-select').addEventListener('change', event => {
+                const session = getSession();
+                session.viewingUserId = event.target.value === session.userId ? null : event.target.value;
+                saveSession(session);
+                renderManagerBar();
+                refreshAllAppViews();
+            });
+            document.getElementById('manager-overview-button').addEventListener('click', () => showPage('manager-overview'));
+        }
+
+        function isTaskOverdueRaw(task, now) {
+            const [hours, minutes] = task.time.split(':').map(Number);
+            return hours < now.getHours() || (hours === now.getHours() && minutes < now.getMinutes());
+        }
+
+        function collectAllTasksForStore(lojaId) {
+            const vendedores = getUsuarios().filter(item => item.lojaId === lojaId);
+            const merged = [];
+            vendedores.forEach(vendedor => {
+                let tasks = [];
+                try { tasks = JSON.parse(localStorage.getItem(`siga-tarefas::${vendedor.id}`)) || []; } catch (error) { tasks = []; }
+                tasks.forEach(task => merged.push({ ...task, vendedorNome: vendedor.name }));
+            });
+            const now = new Date();
+            return merged.sort((first, second) => {
+                if (first.completed !== second.completed) return first.completed ? 1 : -1;
+                const firstOverdue = !first.completed && isTaskOverdueRaw(first, now);
+                const secondOverdue = !second.completed && isTaskOverdueRaw(second, now);
+                if (firstOverdue !== secondOverdue) return firstOverdue ? -1 : 1;
+                return first.time.localeCompare(second.time);
+            });
+        }
+
+        function renderManagerOverview() {
+            const session = getSession();
+            const tasks = collectAllTasksForStore(session.lojaId);
+            document.getElementById('manager-overview-list').innerHTML = tasks.length ? tasks.map(task => `
+                <article class="flex items-center gap-3 rounded-2xl border p-3 ${task.completed ? 'border-emerald-200 bg-emerald-50' : 'border-slate-100 bg-white'}">
+                    <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border-2 ${task.completed ? 'border-emerald-500 bg-emerald-500 text-white' : 'border-indigo-200 bg-white'}">${task.completed ? '<i data-lucide="check" class="w-4 h-4"></i>' : ''}</div>
+                    <div class="min-w-0 flex-1">
+                        <p class="truncate text-xs font-bold ${task.completed ? 'text-emerald-800 line-through' : 'text-slate-700'}">${escapeHtml(task.title)}</p>
+                        <div class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] font-semibold text-slate-400">
+                            <span class="flex items-center gap-1"><i data-lucide="clock-3" class="w-3 h-3"></i>${task.time}</span>
+                            <span class="rounded-full bg-indigo-50 px-2 py-0.5 text-indigo-600">${escapeHtml(task.vendedorNome)}</span>
+                            <span>${task.owner === 'manager' ? 'Gerente' : 'Vendedor'}</span>
+                        </div>
+                    </div>
+                </article>
+            `).join('') : '<p class="rounded-2xl bg-white p-4 text-xs text-slate-400">Nenhuma tarefa registrada pela equipe.</p>';
+            lucide.createIcons();
+        }
+
+        function renderMasterPanel() {
+            const lojas = getLojas();
+            document.getElementById('loja-list').innerHTML = lojas.length ? lojas.map(loja => {
+                const equipe = getUsuarios().filter(item => item.lojaId === loja.id);
+                return `<div class="flex items-center justify-between rounded-xl border border-slate-100 p-3">
+                    <div><p class="text-sm font-bold text-slate-700">${escapeHtml(loja.name)}</p><p class="text-[10px] text-slate-400">${equipe.length} pessoa${equipe.length === 1 ? '' : 's'} cadastrada${equipe.length === 1 ? '' : 's'}</p></div>
+                    <div class="flex items-center gap-2">
+                        <button type="button" data-manage-loja="${loja.id}" class="rounded-lg bg-indigo-50 px-3 py-1.5 text-[10px] font-black text-indigo-600 hover:bg-indigo-100">Gerenciar equipe</button>
+                        <button type="button" data-delete-loja="${loja.id}" aria-label="Excluir loja" class="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-600"><i data-lucide="trash-2" class="h-4 w-4"></i></button>
+                    </div>
+                </div>`;
+            }).join('') : '<p class="text-xs text-slate-400">Nenhuma loja cadastrada ainda.</p>';
+            lucide.createIcons();
+            if (selectedLojaId) renderLojaTeam(selectedLojaId);
+        }
+
+        function renderLojaTeam(lojaId) {
+            selectedLojaId = lojaId;
+            const loja = getLojas().find(item => item.id === lojaId);
+            if (!loja) { document.getElementById('loja-team-section').classList.add('hidden'); return; }
+            document.getElementById('loja-team-section').classList.remove('hidden');
+            document.getElementById('loja-team-title').textContent = `Equipe de ${loja.name}`;
+            const equipe = getUsuarios().filter(item => item.lojaId === lojaId);
+            document.getElementById('usuario-list').innerHTML = equipe.length ? equipe.map(usuario => `
+                <div class="rounded-xl border border-slate-100 p-3">
+                    <div class="flex items-center justify-between gap-2">
+                        <div><p class="text-sm font-bold text-slate-700">${escapeHtml(usuario.name)} <span class="ml-1 rounded-full ${usuario.role === 'gerente' ? 'bg-amber-100 text-amber-700' : 'bg-indigo-100 text-indigo-600'} px-2 py-0.5 text-[9px] font-black uppercase">${usuario.role === 'gerente' ? 'Gerente' : 'Vendedor'}</span></p><p class="text-[10px] text-slate-400">Login: ${escapeHtml(usuario.username)}</p></div>
+                        <div class="flex items-center gap-1">
+                            <button type="button" data-edit-usuario="${usuario.id}" aria-label="Editar acesso" class="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-50 hover:text-indigo-600"><i data-lucide="pencil" class="h-4 w-4"></i></button>
+                            <button type="button" data-delete-usuario="${usuario.id}" aria-label="Excluir acesso" class="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-50 hover:text-red-600"><i data-lucide="trash-2" class="h-4 w-4"></i></button>
+                        </div>
+                    </div>
+                    <div class="mt-2 flex items-center gap-2 rounded-lg bg-slate-50 px-2 py-1.5"><span class="min-w-0 flex-1 truncate text-[10px] font-semibold text-slate-500">${escapeHtml(accessLinkFor(usuario))}</span><button type="button" data-copy-link="${escapeHtml(accessLinkFor(usuario))}" class="shrink-0 text-[10px] font-black text-indigo-500 hover:text-indigo-700">Copiar</button></div>
+                </div>
+            `).join('') : '<p class="text-xs text-slate-400">Nenhum acesso cadastrado para esta loja.</p>';
+            lucide.createIcons();
+        }
+
+        function bindAuthForms() {
+            document.getElementById('master-login-form').addEventListener('submit', event => {
+                event.preventDefault();
+                const email = document.getElementById('master-email-input').value.trim();
+                const password = document.getElementById('master-password-input').value;
+                if (email !== MASTER_CREDENTIALS.email || password !== MASTER_CREDENTIALS.password) {
+                    document.getElementById('master-login-error').textContent = 'Credenciais inválidas.';
+                    return;
+                }
+                saveSession({ type: 'master' });
+                location.hash = 'master';
+            });
+
+            document.getElementById('pessoa-login-form').addEventListener('submit', event => {
+                event.preventDefault();
+                const fullSlug = event.target.dataset.fullSlug;
+                const usuario = getUsuarios().find(item => item.fullSlug === fullSlug);
+                const username = document.getElementById('pessoa-username-input').value.trim();
+                const password = document.getElementById('pessoa-password-input').value;
+                if (!usuario || usuario.username !== username || usuario.password !== password) {
+                    document.getElementById('pessoa-login-error').textContent = 'Login ou senha inválidos.';
+                    return;
+                }
+                saveSession({ type: 'user', userId: usuario.id, role: usuario.role, lojaId: usuario.lojaId, name: usuario.name, viewingUserId: null });
+                location.hash = 'app';
+            });
+
+            document.getElementById('loja-form').addEventListener('submit', event => {
+                event.preventDefault();
+                const name = document.getElementById('loja-name-input').value.trim();
+                if (!name) return;
+                const lojas = getLojas();
+                lojas.push({ id: `loja-${Date.now()}`, name, slug: uniqueSlugFor(lojas, name), createdAt: new Date().toISOString() });
+                saveLojas(lojas);
+                event.target.reset();
+                renderMasterPanel();
+            });
+
+            document.getElementById('close-loja-team').addEventListener('click', () => {
+                selectedLojaId = null;
+                document.getElementById('loja-team-section').classList.add('hidden');
+            });
+
+            document.getElementById('cancel-usuario-edit').addEventListener('click', () => {
+                document.getElementById('usuario-form').reset();
+                document.getElementById('usuario-editing-id').value = '';
+                document.getElementById('cancel-usuario-edit').classList.add('hidden');
+            });
+
+            document.getElementById('usuario-form').addEventListener('submit', event => {
+                event.preventDefault();
+                if (!selectedLojaId) return;
+                const editingId = document.getElementById('usuario-editing-id').value;
+                const name = document.getElementById('usuario-name-input').value.trim();
+                const role = document.getElementById('usuario-role-input').value;
+                const username = document.getElementById('usuario-username-input').value.trim();
+                const password = document.getElementById('usuario-password-input').value;
+                if (!name || !username || !password) return;
+                const loja = getLojas().find(item => item.id === selectedLojaId);
+                const usuarios = getUsuarios();
+                if (editingId) {
+                    saveUsuarios(usuarios.map(item => item.id === editingId ? { ...item, name, role, username, password } : item));
+                } else {
+                    const personSlug = uniqueSlugFor(usuarios.filter(item => item.lojaId === selectedLojaId), name);
+                    usuarios.push({ id: `usuario-${Date.now()}`, lojaId: selectedLojaId, role, name, username, password, slug: personSlug, fullSlug: `${loja.slug}-${personSlug}`, createdAt: new Date().toISOString() });
+                    saveUsuarios(usuarios);
+                }
+                event.target.reset();
+                document.getElementById('usuario-editing-id').value = '';
+                document.getElementById('cancel-usuario-edit').classList.add('hidden');
+                renderMasterPanel();
+            });
+
+            document.getElementById('view-master-panel').addEventListener('click', event => {
+                const manageButton = event.target.closest('[data-manage-loja]');
+                if (manageButton) { renderLojaTeam(manageButton.dataset.manageLoja); return; }
+
+                const deleteLojaButton = event.target.closest('[data-delete-loja]');
+                if (deleteLojaButton) {
+                    if (!window.confirm('Excluir esta loja e todos os acessos vinculados a ela?')) return;
+                    const lojaId = deleteLojaButton.dataset.deleteLoja;
+                    saveLojas(getLojas().filter(item => item.id !== lojaId));
+                    saveUsuarios(getUsuarios().filter(item => item.lojaId !== lojaId));
+                    if (selectedLojaId === lojaId) { selectedLojaId = null; document.getElementById('loja-team-section').classList.add('hidden'); }
+                    renderMasterPanel();
+                    return;
+                }
+
+                const editUsuarioButton = event.target.closest('[data-edit-usuario]');
+                if (editUsuarioButton) {
+                    const usuario = getUsuarios().find(item => item.id === editUsuarioButton.dataset.editUsuario);
+                    if (!usuario) return;
+                    document.getElementById('usuario-editing-id').value = usuario.id;
+                    document.getElementById('usuario-name-input').value = usuario.name;
+                    document.getElementById('usuario-role-input').value = usuario.role;
+                    document.getElementById('usuario-username-input').value = usuario.username;
+                    document.getElementById('usuario-password-input').value = usuario.password;
+                    document.getElementById('cancel-usuario-edit').classList.remove('hidden');
+                    return;
+                }
+
+                const deleteUsuarioButton = event.target.closest('[data-delete-usuario]');
+                if (deleteUsuarioButton) {
+                    if (!window.confirm('Excluir este acesso?')) return;
+                    saveUsuarios(getUsuarios().filter(item => item.id !== deleteUsuarioButton.dataset.deleteUsuario));
+                    renderMasterPanel();
+                    return;
+                }
+
+                const copyButton = event.target.closest('[data-copy-link]');
+                if (copyButton) {
+                    const link = copyButton.dataset.copyLink;
+                    if (navigator.clipboard?.writeText) navigator.clipboard.writeText(link).then(() => { copyButton.textContent = 'Copiado!'; setTimeout(() => { copyButton.textContent = 'Copiar'; }, 1500); });
+                    return;
+                }
+            });
+
+            document.getElementById('master-logout').addEventListener('click', () => { clearSession(); location.href = location.pathname; });
+        }
+
+        bindAuthForms();
+        window.addEventListener('hashchange', applyRoute);
+        applyRoute();
+        // ================= FIM AUTENTICAÇÃO E MULTI-LOJA =================
+
+        function taskStorageKey() { return scopedKey('siga-tarefas'); }
         const defaultTasks = [
             { id: 'manager-1', title: 'Reunião de alinhamento comercial', time: '09:00', owner: 'manager', completed: false, observation: '', date: '' },
             { id: 'manager-2', title: 'Retornar orçamentos prioritários', time: '11:30', owner: 'manager', completed: false, observation: '', date: '' },
@@ -444,7 +905,7 @@
 
         function getTasks() {
             try {
-                const savedTasks = JSON.parse(localStorage.getItem(taskStorageKey));
+                const savedTasks = JSON.parse(localStorage.getItem(taskStorageKey()));
                 if (Array.isArray(savedTasks) && savedTasks.length) return savedTasks;
                 const today = new Date().toISOString().split('T')[0];
                 return defaultTasks.map(task => ({ ...task, date: task.date || today }));
@@ -455,7 +916,7 @@
         }
 
         function saveTasks(tasks) {
-            localStorage.setItem(taskStorageKey, JSON.stringify(tasks));
+            localStorage.setItem(taskStorageKey(), JSON.stringify(tasks));
         }
 
         function taskDateValue(task) {
@@ -474,7 +935,7 @@
             endDate.setFullYear(endDate.getFullYear() + 2);
             for (; cursor <= endDate; cursor.setDate(cursor.getDate() + 1)) {
                 if (!repeatDays.includes(cursor.getDay())) continue;
-                tasks.push({ id: `${seriesId}-${getLocalDateKey(cursor)}`, title, time, owner: 'user', completed: false, observation: '', date: getLocalDateKey(cursor), seriesId, repeatDays });
+                tasks.push({ id: `${seriesId}-${getLocalDateKey(cursor)}`, title, time, owner: currentTaskOwnerRole(), completed: false, observation: '', date: getLocalDateKey(cursor), seriesId, repeatDays });
             }
             return tasks;
         }
@@ -533,7 +994,7 @@
 
         function renderTask(task, showActions = false) {
             const ownerLabel = task.owner === 'manager' ? 'Gerente' : 'Você';
-            const locked = task.owner === 'manager';
+            const locked = task.owner === 'manager' && getSession()?.role !== 'gerente';
             return `<article class="task-item flex items-center gap-3 rounded-2xl border p-3 ${taskStatusClasses(task)} transition-colors" data-task-id="${task.id}">
                 <button type="button" data-toggle-task="${task.id}" aria-label="${task.completed ? 'Reabrir' : 'Concluir'} tarefa" class="w-6 h-6 shrink-0 rounded-lg border-2 ${task.completed ? 'border-emerald-500 bg-emerald-500 text-white' : 'border-indigo-200 bg-white'} flex items-center justify-center">
                     ${task.completed ? '<i data-lucide="check" class="w-4 h-4"></i>' : ''}
@@ -595,6 +1056,7 @@
             const salesPage = document.getElementById('sales-page');
             const servicePage = document.getElementById('service-page');
             const conditionalPage = document.getElementById('conditional-page');
+            const managerOverviewPage = document.getElementById('manager-overview-page');
             const navInicio = document.getElementById('nav-inicio');
             const navTasks = document.getElementById('nav-tasks');
             const navSales = document.getElementById('nav-sales');
@@ -603,7 +1065,7 @@
             const indicator = document.getElementById('nav-indicator');
             document.querySelectorAll('[data-desktop-page]').forEach(button => { const active = button.dataset.desktopPage === pageName; button.classList.toggle('bg-indigo-600', active); button.classList.toggle('text-white', active); button.classList.toggle('text-slate-500', !active); });
 
-            [tasksPage, salesPage, servicePage, conditionalPage].forEach(page => { page.classList.remove('active'); page.classList.add('hidden'); });
+            [tasksPage, salesPage, servicePage, conditionalPage, managerOverviewPage].forEach(page => { page.classList.remove('active'); page.classList.add('hidden'); });
             [navInicio, navTasks, navSales, navService, navConditional].forEach(nav => { nav.classList.add('text-slate-300'); nav.classList.remove('text-indigo-600'); });
 
             if (pageName === 'dashboard') {
@@ -645,6 +1107,10 @@
                 navConditional.classList.add('text-indigo-600');
                 indicator.style.left = '80%';
                 renderConditionals();
+            } else if (pageName === 'manager-overview') {
+                dashboard.classList.add('hidden');
+                managerOverviewPage.classList.remove('hidden');
+                renderManagerOverview();
             }
         }
 
@@ -690,7 +1156,7 @@
             lucide.createIcons();
         }
 
-        const salesStorageKey = 'siga-vendas';
+        function salesStorageKey() { return scopedKey('siga-vendas'); }
         const saleProducts = ['Tênis casual', 'Tênis esportivo', 'Sapatênis', 'Sandália', 'Rasteirinha', 'Cintos', 'Camisa', 'Bermuda', 'Bolsa', 'Mala de viagem', 'Acessório esportivo', 'Acessório de moda', 'Chuteira', 'Bola', 'Tops', 'Maiô', 'Meia', 'Carteira', 'Outros'];
         const productsWithGender = new Set(['Tênis casual', 'Tênis esportivo', 'Sapatênis', 'Sandália', 'Rasteirinha', 'Cintos', 'Camisa', 'Bermuda', 'Bolsa', 'Mala de viagem', 'Acessório de moda', 'Chuteira', 'Tops', 'Maiô', 'Meia', 'Carteira']);
         let salesPeriod = 'day';
@@ -702,7 +1168,7 @@
 
         function getSales() {
             try {
-                const savedSales = JSON.parse(localStorage.getItem(salesStorageKey));
+                const savedSales = JSON.parse(localStorage.getItem(salesStorageKey()));
                 return Array.isArray(savedSales) ? savedSales : [];
             } catch (error) {
                 return [];
@@ -710,7 +1176,7 @@
         }
 
         function saveSales(sales) {
-            localStorage.setItem(salesStorageKey, JSON.stringify(sales));
+            localStorage.setItem(salesStorageKey(), JSON.stringify(sales));
         }
 
         function salesInPeriod() {
@@ -786,7 +1252,7 @@
             return Array.from(document.querySelectorAll(`#${targetId} .sale-product-card`)).filter(card => card.classList.contains('border-indigo-500')).map(card => ({ name: card.dataset.saleProduct, gender: card.querySelector('[data-sale-gender]')?.value || '' }));
         }
 
-        const serviceStorageKey = 'siga-atendimentos';
+        function serviceStorageKey() { return scopedKey('siga-atendimentos'); }
         let servicePeriod = 'day';
         let serviceSelectedDate = getLocalDateKey();
         let serviceWeekStart = serviceSelectedDate;
@@ -794,10 +1260,10 @@
         let editingServiceId = null;
 
         function getServices() {
-            try { const saved = JSON.parse(localStorage.getItem(serviceStorageKey)); return Array.isArray(saved) ? saved : []; } catch (error) { return []; }
+            try { const saved = JSON.parse(localStorage.getItem(serviceStorageKey())); return Array.isArray(saved) ? saved : []; } catch (error) { return []; }
         }
 
-        function saveServices(services) { localStorage.setItem(serviceStorageKey, JSON.stringify(services)); }
+        function saveServices(services) { localStorage.setItem(serviceStorageKey(), JSON.stringify(services)); }
 
         function servicesInPeriod() {
             const savedServices = getServices();
@@ -839,14 +1305,14 @@
             document.getElementById('dashboard-service-summary').innerHTML = services.length ? services.map(item => `<div class="rounded-xl bg-slate-50 p-3"><div class="flex items-center justify-between gap-2"><span class="truncate text-xs font-bold text-slate-700">${escapeHtml(item.client || 'Cliente não informado')}</span><span class="text-[10px] font-black text-indigo-600">${escapeHtml(item.outcomeLabel)}</span></div><p class="mt-1 text-[10px] text-slate-400">${new Date(item.datetime).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}${item.notes ? ` · ${escapeHtml(item.notes)}` : ''}</p></div>`).join('') : '<p class="text-xs text-slate-400">Nenhum atendimento registrado hoje.</p>';
         }
 
-        const conditionalStorageKey = 'siga-condicionais';
+        function conditionalStorageKey() { return scopedKey('siga-condicionais'); }
         let editingConditionalId = null;
 
         function getConditionals() {
-            try { const saved = JSON.parse(localStorage.getItem(conditionalStorageKey)); return Array.isArray(saved) ? saved : []; } catch (error) { return []; }
+            try { const saved = JSON.parse(localStorage.getItem(conditionalStorageKey())); return Array.isArray(saved) ? saved : []; } catch (error) { return []; }
         }
 
-        function saveConditionals(list) { localStorage.setItem(conditionalStorageKey, JSON.stringify(list)); }
+        function saveConditionals(list) { localStorage.setItem(conditionalStorageKey(), JSON.stringify(list)); }
 
         function conditionalDeadline(conditional) {
             return new Date(new Date(conditional.createdAt).getTime() + 24 * 60 * 60 * 1000);
@@ -917,7 +1383,7 @@
                 return existingTaskId;
             }
             const taskId = `conditional-task-${Date.now()}`;
-            saveTasks([...tasks, { id: taskId, title: taskTitle, time: taskTime, owner: 'user', completed: false, observation: '', date: taskDate }]);
+            saveTasks([...tasks, { id: taskId, title: taskTitle, time: taskTime, owner: currentTaskOwnerRole(), completed: false, observation: '', date: taskDate }]);
             return taskId;
         }
 
@@ -1121,7 +1587,7 @@
             const now = new Date();
             const today = getLocalDateKey(now);
             const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-            const sentKey = 'siga-notificacoes-enviadas';
+            const sentKey = scopedKey('siga-notificacoes-enviadas');
             let sent = {};
             try { sent = JSON.parse(localStorage.getItem(sentKey)) || {}; } catch (error) { sent = {}; }
             getTasks().filter(task => !task.completed && task.time === currentTime).forEach(task => {
@@ -1217,7 +1683,7 @@
                 const repeatEnabled = document.getElementById('task-repeat-toggle').checked;
                 const repeatDays = Array.from(document.querySelectorAll('.task-repeat-day:checked')).map(input => Number(input.value));
                 const tasks = getTasks();
-                const newTasks = repeatEnabled && repeatDays.length ? createRecurringTasks(title, time, currentSelectedDate, repeatDays) : [{ id: `user-${Date.now()}`, title, time, owner: 'user', completed: false, observation: '', date: currentSelectedDate }];
+                const newTasks = repeatEnabled && repeatDays.length ? createRecurringTasks(title, time, currentSelectedDate, repeatDays) : [{ id: `user-${Date.now()}`, title, time, owner: currentTaskOwnerRole(), completed: false, observation: '', date: currentSelectedDate }];
                 tasks.push(...newTasks);
                 saveTasks(tasks);
                 event.target.reset();
@@ -1384,7 +1850,7 @@
                 const editButton = event.target.closest('[data-edit-task]');
                 if (editButton) {
                     const task = getTasks().find(item => item.id === editButton.dataset.editTask);
-                    if (!task || task.owner === 'manager') return;
+                    if (!task || (task.owner === 'manager' && getSession()?.role !== 'gerente')) return;
                     if (isPastTask(task)) return window.alert('Tarefas de dias passados ficam registradas e não podem ser alteradas.');
                     const scope = askTaskScope(task, 'Editar');
                     if (!scope) return;
@@ -1402,7 +1868,8 @@
                 const deleteButton = event.target.closest('[data-delete-task]');
                 if (deleteButton) {
                     const task = getTasks().find(item => item.id === deleteButton.dataset.deleteTask);
-                    if (task && task.owner !== 'manager' && !isPastTask(task) && window.confirm('Excluir esta tarefa?')) {
+                    const deletable = task && (task.owner !== 'manager' || getSession()?.role === 'gerente');
+                    if (deletable && !isPastTask(task) && window.confirm('Excluir esta tarefa?')) {
                         const scope = askTaskScope(task, 'Excluir');
                         if (!scope) return;
                         const ids = new Set(getTasksByScope(task, scope).map(item => item.id));
@@ -1414,15 +1881,13 @@
         }
 
         function initTasks() {
-            if (!localStorage.getItem(taskStorageKey)) saveTasks(defaultTasks);
+            if (!localStorage.getItem(taskStorageKey())) saveTasks(defaultTasks);
             renderTasks();
             bindTaskActions();
             initObservationEditor();
             initTaskNotifications();
             renderDashboardSales();
         }
-
-        initTasks();
 
         const moodOptions = [
             { id: 'muito-mal', emoji: '😔', label: 'Muito mal' },
@@ -1432,7 +1897,7 @@
             { id: 'excelente', emoji: '🤩', label: 'Excelente' },
             { id: 'energizado', emoji: '🔥', label: 'Energizado' }
         ];
-        const moodStorageKey = 'siga-humor-registros';
+        function moodStorageKey() { return scopedKey('siga-humor-registros'); }
         let selectedMoodId = 'normal';
 
         function getLocalDateKey(date = new Date()) {
@@ -1444,7 +1909,7 @@
 
         function getMoodRecords() {
             try {
-                return JSON.parse(localStorage.getItem(moodStorageKey)) || {};
+                return JSON.parse(localStorage.getItem(moodStorageKey())) || {};
             } catch (error) {
                 return {};
             }
@@ -1453,7 +1918,7 @@
         function saveMoodRecord(dateKey, moodId) {
             const records = getMoodRecords();
             records[dateKey] = moodId;
-            localStorage.setItem(moodStorageKey, JSON.stringify(records));
+            localStorage.setItem(moodStorageKey(), JSON.stringify(records));
         }
 
         function getMood(moodId) {
@@ -1520,15 +1985,20 @@
             });
         }
 
-        function initMoodCard() {
+        function refreshMoodCard() {
             const todayKey = getLocalDateKey();
             const records = getMoodRecords();
             selectedMoodId = records[todayKey] || 'normal';
             renderMoodOptions();
             updateMoodLabel();
             renderMoodCalendar();
+        }
+
+        function initMoodCard() {
+            refreshMoodCard();
 
             document.getElementById('confirm-mood').addEventListener('click', () => {
+                const todayKey = getLocalDateKey();
                 saveMoodRecord(todayKey, selectedMoodId || 'normal');
                 const mood = getMood(selectedMoodId);
                 document.getElementById('mood-feedback').textContent = `Humor ${mood.label.toLowerCase()} salvo hoje.`;
@@ -1545,8 +2015,6 @@
                 lucide.createIcons();
             });
         }
-
-        initMoodCard();
 
         const data = {
             dia: { title: "Meta Diária", date: "06 Setembro", valor: "R$ 2.450", meta: "R$ 3.500", falta: "R$ 1.050", progress: 70, badge: "Bronze", color: "tier-bronze" },
