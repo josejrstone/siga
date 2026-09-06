@@ -3,223 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIGA - Dashboard</title>
-    <!-- Tailwind CSS -->
+    <title>SIGA - Sistema de Gestão</title>
+    <!-- Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); }
-        .progress-bar-glow { box-shadow: 0 0 15px rgba(99, 102, 241, 0.3); }
-        .fab-shadow { box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4); }
+        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); }
     </style>
 </head>
-<body class="bg-[#F8FAFC] text-slate-800 pb-24 md:pb-8">
+<body class="bg-slate-50 text-slate-900 min-h-screen pb-24">
 
-    <!-- HEADER / TOPBAR -->
-    <header class="sticky top-0 z-40 w-full bg-white/80 backdrop-blur-md border-b border-slate-100">
+    <!-- BARRA SUPERIOR -->
+    <header class="sticky top-0 z-50 w-full bg-white/70 backdrop-blur-lg border-b border-slate-200">
         <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
             <div class="flex items-center gap-2">
-                <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold">S</div>
-                <h1 class="text-xl font-extrabold tracking-tight text-slate-900">SIGA</h1>
-            </div>
-            <div class="flex items-center gap-3">
-                <div class="text-right hidden sm:block">
-                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Vendedor</p>
-                    <p class="text-sm font-semibold text-slate-700">Carlos Silva</p>
+                <div class="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-200">
+                    <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
                 </div>
-                <img src="https://ui-avatars.com/api/?name=Carlos+Silva&background=6366f1&color=fff" class="w-10 h-10 rounded-full border-2 border-white shadow-sm" alt="Avatar">
+                <span class="text-xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">SIGA</span>
+            </div>
+            <div class="flex items-center gap-3 bg-slate-100 p-1.5 rounded-full pl-4">
+                <span class="text-xs font-bold text-slate-600">Carlos Silva</span>
+                <div class="w-8 h-8 bg-indigo-500 rounded-full border-2 border-white shadow-sm flex items-center justify-center text-white text-xs font-bold">CS</div>
             </div>
         </div>
     </header>
 
     <main class="max-w-5xl mx-auto p-4 space-y-6">
         
-        <!-- FRASE DO DIA -->
-        <section class="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-700 rounded-[2rem] p-6 text-white shadow-xl">
+        <!-- HEADER MOTIVACIONAL -->
+        <div class="bg-gradient-to-br from-indigo-600 to-violet-700 rounded-[2.5rem] p-8 text-white shadow-2xl relative overflow-hidden">
             <div class="relative z-10">
-                <span class="text-xs font-bold bg-white/20 py-1 px-3 rounded-full uppercase tracking-widest leading-none">Insight do Dia</span>
-                <p class="mt-4 text-lg font-medium leading-relaxed italic">"O sucesso não é o fim, o fracasso não é fatal: é a coragem de continuar que conta."</p>
-                <p class="mt-2 text-sm opacity-70">— Winston Churchill</p>
-            </div>
-            <!-- Círculos decorativos de fundo -->
-            <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
-        </section>
-
-        <!-- HUMOR E DICA -->
-        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Mood -->
-            <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
-                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                    <i data-lucide="smile" class="w-4 h-4 text-yellow-500"></i> Como você está hoje?
-                </h3>
-                <div class="flex justify-between">
-                    <button class="p-3 hover:bg-slate-50 rounded-2xl transition-all hover:scale-110 text-2xl">😔</button>
-                    <button class="p-3 hover:bg-slate-50 rounded-2xl transition-all hover:scale-110 text-2xl">😐</button>
-                    <button class="p-3 bg-indigo-50 border border-indigo-100 rounded-2xl transition-all scale-110 text-2xl">😊</button>
-                    <button class="p-3 hover:bg-slate-50 rounded-2xl transition-all hover:scale-110 text-2xl">🤩</button>
-                    <button class="p-3 hover:bg-slate-50 rounded-2xl transition-all hover:scale-110 text-2xl">🔥</button>
-                </div>
-            </div>
-            <!-- Microlearning -->
-            <div class="bg-emerald-50 p-6 rounded-[2rem] border border-emerald-100 flex gap-4">
-                <div class="bg-emerald-500 text-white p-3 rounded-2xl h-fit shadow-lg shadow-emerald-200">
-                    <i data-lucide="lightbulb" class="w-6 h-6"></i>
-                </div>
-                <div>
-                    <h3 class="text-emerald-900 font-bold">Dica de Ouro</h3>
-                    <p class="text-sm text-emerald-700 leading-snug mt-1">Sempre faça perguntas abertas. Em vez de "Gostou?", tente "O que mais te chamou atenção nesse modelo?"</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- PERFORMANCE -->
-        <section class="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
-            <div class="flex justify-between items-end mb-6">
-                <div>
-                    <h2 class="text-2xl font-extrabold text-slate-800">Sua Performance</h2>
-                    <p class="text-sm text-slate-400 font-medium italic">Faltam R$ 17.500 para atingir a meta</p>
-                </div>
-                <div class="text-right">
-                    <span class="text-3xl font-black text-indigo-600 leading-none">65%</span>
-                </div>
-            </div>
-
-            <!-- Barra de Progresso -->
-            <div class="w-full h-4 bg-slate-100 rounded-full mb-8 overflow-hidden">
-                <div class="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full progress-bar-glow" style="width: 65%"></div>
-            </div>
-
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Vendas Hoje</p>
-                    <p class="text-lg font-bold">R$ 2.450</p>
-                </div>
-                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Ticket Médio</p>
-                    <div class="flex items-center gap-2 text-emerald-600">
-                        <p class="text-lg font-bold text-slate-800">R$ 480</p>
-                        <i data-lucide="trending-up" class="w-4 h-4"></i>
+                <h2 class="text-sm font-bold uppercase tracking-[0.2em] opacity-80 mb-2">Bom dia, Carlos!</h2>
+                <p class="text-2xl md:text-3xl font-extrabold leading-tight">"A melhor maneira de prever o futuro é criá-lo."</p>
+                <div class="mt-6 flex gap-4">
+                    <div class="bg-white/20 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/10">
+                        <p class="text-[10px] uppercase font-bold opacity-70">Sua Meta</p>
+                        <p class="text-lg font-bold italic">R$ 50.000</p>
+                    </div>
+                    <div class="bg-emerald-400/20 backdrop-blur-md px-4 py-2 rounded-2xl border border-emerald-400/20 text-emerald-300">
+                        <p class="text-[10px] uppercase font-bold opacity-70">Falta</p>
+                        <p class="text-lg font-bold italic">R$ 17.500</p>
                     </div>
                 </div>
-                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Projeção</p>
-                    <p class="text-lg font-bold text-slate-800">R$ 48.200</p>
-                </div>
-                <div class="p-4 bg-indigo-600 rounded-2xl text-white shadow-lg shadow-indigo-100">
-                    <p class="text-[10px] font-bold opacity-80 uppercase mb-1">Sua Meta</p>
-                    <p class="text-lg font-bold text-white leading-none">R$ 50.000</p>
-                </div>
             </div>
-        </section>
+            <!-- Decoração -->
+            <div class="absolute -right-20 -top-20 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+        </div>
 
-        <!-- ROTINA E RANKING -->
-        <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- DASHBOARD GRID -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             
-            <!-- Checklist -->
-            <div class="space-y-4">
-                <div class="flex justify-between items-center px-2">
-                    <h3 class="font-extrabold text-lg flex items-center gap-2 uppercase tracking-tight">
-                        <i data-lucide="check-circle-2" class="text-indigo-600"></i> Gestão de Rotina
-                    </h3>
-                    <button class="text-xs font-bold text-indigo-600">Ver Todas</button>
+            <!-- HUMOR & DICA -->
+            <div class="md:col-span-2 space-y-6">
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
+                        <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                            <i data-lucide="smile" class="w-4 h-4 text-orange-400"></i> Registro de Humor
+                        </p>
+                        <div class="flex justify-between">
+                            <button class="text-2xl hover:scale-125 transition-transform">😔</button>
+                            <button class="text-2xl hover:scale-125 transition-transform">😐</button>
+                            <button class="text-2xl scale-125 bg-indigo-50 p-2 rounded-xl border border-indigo-100">😊</button>
+                            <button class="text-2xl hover:scale-125 transition-transform">🤩</button>
+                            <button class="text-2xl hover:scale-125 transition-transform">🔥</button>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-amber-50 p-6 rounded-[2rem] border border-amber-100 relative overflow-hidden">
+                        <i data-lucide="lightbulb" class="absolute -right-2 -bottom-2 w-16 h-16 text-amber-200/50"></i>
+                        <h4 class="text-amber-800 font-bold text-sm mb-1">Dica de Venda</h4>
+                        <p class="text-amber-700 text-xs leading-relaxed font-medium">Escute 70% e fale 30%. O segredo do fechamento está em ouvir a dor do cliente.</p>
+                    </div>
                 </div>
-                <div class="space-y-3">
-                    <label class="flex items-center gap-4 bg-white p-5 rounded-3xl border border-slate-100 shadow-sm cursor-pointer group">
-                        <input type="checkbox" class="w-6 h-6 rounded-lg border-slate-200 text-indigo-600 focus:ring-indigo-500">
-                        <div class="flex-1">
-                            <p class="text-sm font-bold text-slate-700 group-hover:text-indigo-600 transition-colors">Retornar orçamento do Sr. João</p>
-                            <p class="text-[10px] text-slate-400 font-medium">Prioridade: Alta</p>
+
+                <!-- PROGRESSO -->
+                <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100">
+                    <div class="flex justify-between items-end mb-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-800 tracking-tight">Desempenho Mensal</h3>
+                            <p class="text-xs text-slate-400 font-semibold uppercase tracking-widest">Atualizado agora</p>
                         </div>
-                        <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300"></i>
-                    </label>
-                    <label class="flex items-center gap-4 bg-white p-5 rounded-3xl border border-slate-100 shadow-sm cursor-pointer group">
-                        <input type="checkbox" class="w-6 h-6 rounded-lg border-slate-200 text-indigo-600 focus:ring-indigo-500">
-                        <div class="flex-1">
-                            <p class="text-sm font-bold text-slate-700 group-hover:text-indigo-600 transition-colors">Enviar link de pagamento - Maria</p>
-                            <p class="text-[10px] text-slate-400 font-medium">Até às 14:00</p>
+                        <span class="text-4xl font-black text-indigo-600">65<span class="text-lg">%</span></span>
+                    </div>
+                    <div class="w-full h-4 bg-slate-100 rounded-full overflow-hidden shadow-inner">
+                        <div class="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full" style="width: 65%"></div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mt-8">
+                        <div class="bg-slate-50 p-4 rounded-2xl">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Ticket Médio</p>
+                            <div class="flex items-center gap-2">
+                                <span class="text-lg font-bold">R$ 485,00</span>
+                                <i data-lucide="arrow-up-right" class="w-4 h-4 text-emerald-500"></i>
+                            </div>
                         </div>
-                        <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300"></i>
-                    </label>
+                        <div class="bg-slate-50 p-4 rounded-2xl">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Projeção Final</p>
+                            <span class="text-lg font-bold text-slate-700">R$ 48.200</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Ranking -->
-            <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
-                <h3 class="font-extrabold text-lg flex items-center gap-2 uppercase tracking-tight mb-6">
-                    <i data-lucide="trophy" class="text-yellow-500"></i> Ranking Semanal
+            <!-- RANKING E PREMIAÇÃO -->
+            <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 flex flex-col h-full">
+                <h3 class="text-sm font-black text-slate-400 uppercase tracking-widest mb-6 flex items-center gap-2">
+                    <i data-lucide="trophy" class="w-4 h-4 text-yellow-500"></i> Ranking Semanal
                 </h3>
-                <div class="space-y-4 text-sm font-medium text-slate-600 px-1">
-                    <div class="flex items-center justify-between">
+                <div class="space-y-5 flex-1">
+                    <div class="flex items-center justify-between opacity-60 scale-95">
                         <div class="flex items-center gap-3">
-                            <span class="w-6 text-center font-bold text-yellow-500 text-lg">1</span>
-                            <img src="https://ui-avatars.com/api/?name=Ana+M&background=fde68a&color=92400e" class="w-8 h-8 rounded-full">
-                            <span>Ana Maria</span>
+                            <span class="font-bold text-slate-400">1º</span>
+                            <div class="w-8 h-8 bg-slate-200 rounded-full"></div>
+                            <span class="text-sm font-semibold italic text-slate-500">Ana M.</span>
                         </div>
-                        <span class="font-bold">R$ 12.400</span>
+                        <span class="text-xs font-bold italic">R$ 12k</span>
                     </div>
-                    <div class="flex items-center justify-between p-3 bg-indigo-50 rounded-2xl ring-1 ring-indigo-100">
+                    <div class="flex items-center justify-between bg-indigo-50 p-4 rounded-3xl border border-indigo-100 shadow-sm shadow-indigo-100">
                         <div class="flex items-center gap-3 text-indigo-700 font-bold">
-                            <span class="w-6 text-center">2</span>
-                            <img src="https://ui-avatars.com/api/?name=Carlos+Silva&background=6366f1&color=fff" class="w-8 h-8 rounded-full">
-                            <span>Você (Carlos)</span>
+                            <span class="text-lg">2º</span>
+                            <div class="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center text-[10px] text-white">VOCÊ</div>
+                            <span class="text-sm">Carlos S.</span>
                         </div>
-                        <span class="font-black text-indigo-700">R$ 10.250</span>
+                        <span class="text-sm font-black text-indigo-700 italic">R$ 10k</span>
                     </div>
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-3 opacity-70">
-                            <span class="w-6 text-center font-bold">3</span>
-                            <img src="https://ui-avatars.com/api/?name=Pedro+S&background=e2e8f0&color=475569" class="w-8 h-8 rounded-full">
-                            <span>Pedro Soares</span>
+                    <div class="flex items-center justify-between opacity-60 scale-95">
+                        <div class="flex items-center gap-3 text-slate-500">
+                            <span class="font-bold">3º</span>
+                            <div class="w-8 h-8 bg-slate-200 rounded-full"></div>
+                            <span class="text-sm font-semibold">Bia L.</span>
                         </div>
-                        <span class="font-bold opacity-70">R$ 9.800</span>
+                        <span class="text-xs font-bold italic">R$ 9.5k</span>
                     </div>
                 </div>
-                <!-- Incentivo -->
-                <div class="mt-6 p-4 bg-amber-50 rounded-2xl border border-amber-100 flex items-center gap-3">
-                    <div class="text-xl">🎁</div>
-                    <p class="text-[11px] text-amber-800 font-bold leading-tight">Mantenha-se no TOP 3 até sexta e ganhe 1 Day Off!</p>
+                <div class="mt-8 bg-indigo-600 p-4 rounded-3xl text-white text-center shadow-lg shadow-indigo-200">
+                    <p class="text-[10px] font-bold uppercase opacity-80 mb-1">Prêmio da Semana</p>
+                    <p class="text-sm font-bold tracking-tight italic">🏆 Voucher R$ 100 Outback</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- TAREFAS RÁPIDAS -->
+        <section class="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="font-bold text-slate-800">Minha Rotina</h3>
+                <span class="bg-indigo-100 text-indigo-600 text-[10px] font-black px-3 py-1 rounded-full uppercase">3 Pendentes</span>
+            </div>
+            <div class="space-y-3">
+                <div class="flex items-center gap-4 p-4 hover:bg-slate-50 rounded-2xl transition-colors border border-transparent hover:border-slate-100 group">
+                    <div class="w-6 h-6 border-2 border-indigo-200 rounded-lg group-hover:bg-indigo-600 transition-colors"></div>
+                    <p class="text-sm font-medium text-slate-700">Retornar orçamento do Sr. João (WhatsApp)</p>
+                </div>
+                <div class="flex items-center gap-4 p-4 hover:bg-slate-50 rounded-2xl transition-colors border border-transparent hover:border-slate-100 group">
+                    <div class="w-6 h-6 border-2 border-indigo-200 rounded-lg group-hover:bg-indigo-600 transition-colors"></div>
+                    <p class="text-sm font-medium text-slate-700">Confirmar recebimento do Pedido #4492</p>
                 </div>
             </div>
         </section>
+
     </main>
 
-    <!-- FLOATING ACTION BUTTON (FAB) -->
-    <button class="fixed bottom-24 right-6 md:bottom-8 md:right-8 w-16 h-16 bg-indigo-600 text-white rounded-full flex items-center justify-center fab-shadow hover:scale-110 active:scale-95 transition-all z-50">
+    <!-- FAB (BOTÃO FLUTUANTE) -->
+    <button class="fixed bottom-24 right-6 md:bottom-10 md:right-10 w-16 h-16 bg-gradient-to-br from-indigo-600 to-purple-700 text-white rounded-full flex items-center justify-center shadow-2xl shadow-indigo-300 hover:scale-110 active:scale-95 transition-all z-50">
         <i data-lucide="plus" class="w-8 h-8"></i>
     </button>
 
-    <!-- NAVEGAÇÃO INFERIOR (MOBILE) -->
-    <nav class="md:hidden fixed bottom-0 left-0 right-0 h-20 bg-white/90 backdrop-blur-md border-t border-slate-100 flex items-center justify-around px-6 z-40">
+    <!-- MENU INFERIOR MOBILE -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 h-20 bg-white/80 backdrop-blur-xl border-t border-slate-100 flex items-center justify-around px-4 z-40">
         <div class="flex flex-col items-center gap-1 text-indigo-600">
-            <i data-lucide="layout-dashboard" class="w-6 h-6"></i>
+            <i data-lucide="home" class="w-6 h-6"></i>
             <span class="text-[10px] font-bold">Início</span>
         </div>
-        <div class="flex flex-col items-center gap-1 text-slate-400 hover:text-indigo-500 transition-colors">
-            <i data-lucide="users" class="w-6 h-6"></i>
+        <div class="flex flex-col items-center gap-1 text-slate-400">
+            <i data-lucide="phone-call" class="w-6 h-6"></i>
             <span class="text-[10px] font-bold">Atendimento</span>
         </div>
-        <div class="flex flex-col items-center gap-1 text-slate-400 hover:text-indigo-500 transition-colors">
-            <i data-lucide="shopping-cart" class="w-6 h-6"></i>
+        <div class="flex flex-col items-center gap-1 text-slate-400">
+            <i data-lucide="clipboard-list" class="w-6 h-6"></i>
             <span class="text-[10px] font-bold">Pedidos</span>
         </div>
-        <div class="flex flex-col items-center gap-1 text-slate-400 hover:text-indigo-500 transition-colors">
-            <i data-lucide="settings" class="w-6 h-6"></i>
+        <div class="flex flex-col items-center gap-1 text-slate-400">
+            <i data-lucide="user" class="w-6 h-6"></i>
             <span class="text-[10px] font-bold">Perfil</span>
         </div>
     </nav>
 
     <script>
-        // Inicializa os ícones do Lucide
+        // Carrega os ícones
         lucide.createIcons();
-
-        // Lógica simples para o FAB
-        document.querySelector('button.fixed').addEventListener('click', () => {
-            alert('Ação rápida: Aqui abriria o menu para Novo Atendimento, Pedido ou Condicional!');
-        });
     </script>
 </body>
 </html>
