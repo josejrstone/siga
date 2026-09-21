@@ -32,8 +32,6 @@
         .date-carousel::-webkit-scrollbar { display: none; }
         .observation-preview { max-height: 2.8em; overflow: hidden; cursor: pointer; }
         .observation-preview.observation-expanded { max-height: none; }
-        #sync-error { position: fixed; left: 1rem; right: 1rem; bottom: 1rem; z-index: 100; display: none; }
-        #site-toast { position: fixed; left: 1rem; right: 1rem; bottom: 1rem; z-index: 110; display: none; }
         #site-dialog { position: fixed; inset: 0; z-index: 120; display: none; align-items: center; justify-content: center; padding: 1rem; background: rgba(15, 23, 42, 0.42); backdrop-filter: blur(6px); }
         #site-dialog.is-open { display: flex; }
         :root { --surface: #ffffff; --canvas: #f7f9fc; --line: #e7ebf2; --ink: #172033; --muted: #718096; --brand: #4f46e5; }
@@ -102,8 +100,6 @@
     </style>
 </head>
 <body class="bg-[#FBFDFF] text-slate-900 min-h-screen pb-28">
-    <div id="sync-error" class="rounded-xl bg-red-600 px-4 py-3 text-xs font-bold text-white shadow-xl" role="alert"></div>
-    <div id="site-toast" class="rounded-xl bg-slate-800 px-4 py-3 text-xs font-bold text-white shadow-xl" role="status" aria-live="polite"></div>
     <div id="site-dialog" role="dialog" aria-modal="true" aria-labelledby="site-dialog-title">
         <div class="w-full max-w-md rounded-[1.75rem] border border-slate-100 bg-white p-6 shadow-2xl">
             <div class="mb-5 flex items-start gap-3"><div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600"><i data-lucide="message-circle-question" class="h-5 w-5"></i></div><div><h2 id="site-dialog-title" class="text-base font-black text-slate-800"></h2><p id="site-dialog-message" class="mt-1 whitespace-pre-line text-xs leading-relaxed text-slate-500"></p></div></div>
@@ -633,7 +629,7 @@
     </section>
 
     <section id="manager-report-page" class="hidden max-w-5xl mx-auto space-y-6 p-4">
-        <div><h2 class="text-2xl font-black text-slate-800">Relatório da loja</h2><p class="mt-1 text-xs font-medium text-slate-500">Acompanhe vendas da equipe e registre vendas realizadas pela loja.</p></div>
+        <div class="flex items-center gap-3"><button type="button" data-back-dashboard aria-label="Voltar ao início" class="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-500 hover:bg-indigo-50 hover:text-indigo-600"><i data-lucide="arrow-left" class="h-4 w-4"></i></button><div><h2 class="text-2xl font-black text-slate-800">Relatório da loja</h2><p class="mt-1 text-xs font-medium text-slate-500">Acompanhe vendas da equipe e registre vendas realizadas pela loja.</p></div></div>
         <details id="manager-report-filters" class="rounded-[2rem] border border-slate-100 bg-white p-5 shadow-sm" open>
             <summary class="mobile-collapsible-summary text-sm font-black uppercase tracking-wider text-slate-800">Filtros do relatório</summary>
             <div class="mt-3 grid gap-3 md:grid-cols-4">
@@ -1221,34 +1217,7 @@
         }
 
         function showToast(message, type = 'info') {
-            const toast = document.getElementById('site-toast');
-            if (!toast) return;
-            const key = `${type}:${message}`;
-            const now = Date.now();
-            if (showToast.lastKey === key && now - (showToast.lastTime || 0) < 4000) return;
-            showToast.lastKey = key;
-            showToast.lastTime = now;
-            const palette = {
-                info: { shell: 'bg-slate-900/95 border border-white/10', accent: 'bg-indigo-500', icon: 'i data-lucide="bell-ring" class="h-4 w-4"' },
-                error: { shell: 'bg-red-600/95 border border-red-300/40', accent: 'bg-red-200', icon: 'i data-lucide="alert-triangle" class="h-4 w-4"' },
-                success: { shell: 'bg-emerald-600/95 border border-emerald-300/40', accent: 'bg-emerald-200', icon: 'i data-lucide="check-circle-2" class="h-4 w-4"' }
-            }[type] || { shell: 'bg-slate-900/95 border border-white/10', accent: 'bg-indigo-500', icon: 'i data-lucide="bell-ring" class="h-4 w-4"' };
-            toast.innerHTML = `
-                <div class="flex items-start gap-3">
-                    <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${palette.accent} text-slate-900">
-                        <${palette.icon}>
-                    </div>
-                    <div class="min-w-0 flex-1">
-                        <p class="text-[10px] font-black uppercase tracking-[0.18em] text-white/70">Lembrete</p>
-                        <p class="mt-1 text-xs font-bold text-white leading-5">${escapeHtml(message)}</p>
-                    </div>
-                </div>
-            `;
-            toast.className = `rounded-2xl px-3 py-3 text-white shadow-[0_18px_38px_rgba(15,23,42,0.35)] backdrop-blur-md ${palette.shell}`;
-            toast.style.display = 'block';
-            window.clearTimeout(showToast.timer);
-            showToast.timer = window.setTimeout(() => { toast.style.display = 'none'; }, 4500);
-            window.lucide?.createIcons();
+            return;
         }
 
         let activeSiteDialog = null;
@@ -2118,8 +2087,8 @@
 
         async function askManagerTaskScope(task, action) {
             if (!task.seriesId) return 'single';
-            const answer = await sitePrompt(`${action} esta tarefa somente neste dia ou todas as ocorrências futuras?\nDigite 1 para somente este dia ou 2 para todas as futuras.`, '1', `${action} tarefa recorrente`);
-            return answer === '2' ? 'series' : answer === '1' ? 'single' : null;
+            const choice = await siteChoice(`${action} esta tarefa recorrente?`, 'Só esta', 'Todas as futuras', `${action} tarefa recorrente`);
+            return choice === true ? 'single' : choice === false ? 'series' : null;
         }
 
         function saveManagerTask(userId, taskId, changes, scope = 'single') {
@@ -4187,8 +4156,21 @@
                 closeProspectingCreateModal();
                 renderProspectingPage();
             });
+            function bindBackButtons() {
+                document.querySelectorAll('[data-back-dashboard]').forEach(button => {
+                    if (button.dataset.bound === 'true') return;
+                    button.dataset.bound = 'true';
+                    button.addEventListener('click', () => showPage('dashboard'));
+                });
+            }
+            document.addEventListener('click', event => {
+                const button = event.target.closest('[data-back-dashboard]');
+                if (!button) return;
+                event.preventDefault();
+                showPage('dashboard');
+            });
             document.querySelectorAll('[data-desktop-page]').forEach(button => button.addEventListener('click', () => showPage(button.dataset.desktopPage)));
-            document.querySelectorAll('[data-back-dashboard]').forEach(button => button.addEventListener('click', () => showPage('dashboard')));
+            bindBackButtons();
             document.getElementById('dashboard-sales-title').addEventListener('click', () => showPage('sales'));
             document.getElementById('dashboard-service-title').addEventListener('click', () => showPage('service'));
             document.getElementById('open-service-from-dashboard').addEventListener('click', () => showPage('service'));
