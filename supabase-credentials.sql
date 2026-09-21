@@ -133,6 +133,51 @@ create policy prospeccao_listas_anon_all
     using (true)
     with check (true);
 
+create table if not exists public.treinamento_modulos (
+    id uuid primary key default gen_random_uuid(),
+    loja_id uuid not null references public.lojas(id) on delete cascade,
+    titulo text not null,
+    ordem integer not null default 0,
+    created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now()
+);
+
+grant select, insert, update, delete on public.treinamento_modulos to anon, authenticated;
+alter table public.treinamento_modulos enable row level security;
+drop policy if exists treinamento_modulos_anon_all on public.treinamento_modulos;
+create policy treinamento_modulos_anon_all
+    on public.treinamento_modulos for all to anon, authenticated
+    using (true)
+    with check (true);
+
+create table if not exists public.treinamentos (
+    id uuid primary key default gen_random_uuid(),
+    loja_id uuid not null references public.lojas(id) on delete cascade,
+    modulo_id uuid,
+    titulo text not null,
+    video_url text default '',
+    audio_url text default '',
+    pdf_url text default '',
+    disponibilidade jsonb not null default '{}'::jsonb,
+    vendedor_ids jsonb not null default '[]'::jsonb,
+    perguntas jsonb not null default '[]'::jsonb,
+    created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now()
+);
+
+alter table public.treinamentos
+    add column if not exists audio_url text default '';
+alter table public.treinamentos
+    add column if not exists modulo_id uuid;
+
+grant select, insert, update, delete on public.treinamentos to anon, authenticated;
+alter table public.treinamentos enable row level security;
+drop policy if exists treinamentos_anon_all on public.treinamentos;
+create policy treinamentos_anon_all
+    on public.treinamentos for all to anon, authenticated
+    using (true)
+    with check (true);
+
 -- Compatibilidade com a coluna antiga de senha, caso ainda exista no projeto.
 do $$
 begin

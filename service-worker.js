@@ -1,4 +1,4 @@
-const CACHE_NAME = 'siga-shell-v2';
+const CACHE_NAME = 'siga-shell-v3';
 const APP_SHELL = ['./', './index.html', './manifest.webmanifest', './icon.svg'];
 
 self.addEventListener('install', event => {
@@ -23,5 +23,19 @@ self.addEventListener('fetch', event => {
                 return response;
             })
             .catch(() => caches.match(event.request).then(response => response || caches.match('./index.html')))
+    );
+});
+
+self.addEventListener('notificationclick', event => {
+    event.notification.close();
+    const url = './';
+    event.waitUntil(
+        clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clientList => {
+            if (clientList.length > 0) {
+                const firstClient = clientList[0];
+                return firstClient.focus();
+            }
+            return clients.openWindow(url);
+        })
     );
 });
