@@ -3119,7 +3119,8 @@
             const endInput = document.getElementById(`${kind}-week-end`);
             startInput.closest('label')?.classList.toggle('hidden', goals.length > 0);
             endInput.closest('label')?.classList.toggle('hidden', goals.length > 0);
-            const selectedGoal = goals.find(goal => goal.weekStart === start && goal.weekEnd === end) || goals[0];
+            const selectedDate = kind === 'sales' ? salesSelectedDate : serviceSelectedDate;
+            const selectedGoal = resolveActiveWeeklyGoal(goals, selectedDate);
             select.innerHTML = goals.length
                 ? goals.map(goal => `<option value="${goal.id}" ${goal.id === selectedGoal.id ? 'selected' : ''}>${escapeHtml(goal.name || 'Semana')} · ${goal.weekStart} até ${goal.weekEnd}</option>`).join('')
                 : '<option value="">Nenhuma semana cadastrada para você</option>';
@@ -3487,8 +3488,8 @@
             const minimum = Math.min(...activeValues);
             const maximum = Math.max(...activeValues);
             const range = maximum - minimum;
-            const start = activeTiers.length === 1 ? 50 : 8;
-            const span = activeTiers.length === 1 ? 0 : 84;
+            const start = 50;
+            const span = activeTiers.length > 1 && range > 0 ? 42 : 0;
             return { values, activeTiers, minimum, maximum, range, start, span };
         }
 
@@ -3496,7 +3497,6 @@
             const scale = goalMarkerScale(goal);
             if (!scale.activeTiers.length || scale.maximum <= 0) return 0;
             const current = Math.max(0, Number(value || 0));
-            if (scale.activeTiers.length === 1) return Math.min(100, current / scale.maximum * 100);
             if (current <= scale.minimum) return Math.min(scale.start, current / scale.minimum * scale.start);
             if (current >= scale.maximum) return current === scale.maximum ? scale.start + scale.span : Math.min(100, scale.start + scale.span + ((current - scale.maximum) / scale.maximum) * (100 - scale.start - scale.span));
             return scale.start + ((current - scale.minimum) / scale.range) * scale.span;
@@ -4458,6 +4458,10 @@
         }
 
         function renderSales() {
+            if (salesPeriod === 'week') {
+                renderWeeklyPeriodOptions('sales');
+                renderSalesWeekDays();
+            }
             const periodSales = salesInPeriod().sort((first, second) => second.datetime.localeCompare(first.datetime));
             const total = periodSales.reduce((sum, sale) => sum + Number(sale.value), 0);
             document.getElementById('sales-month-selector').value = salesSelectedMonth;
